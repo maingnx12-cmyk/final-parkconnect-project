@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#0F3490,#1A56DB);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border-radius:24px;padding:40px 36px;max-width:480px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.logo{font-size:64px;margin-bottom:12px}
+.badge{display:inline-block;background:#EEF4FF;color:#1A56DB;border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;margin-bottom:14px;letter-spacing:.04em}
+h1{font-size:30px;font-weight:800;color:#0F172A;margin-bottom:6px}
+.sub{color:#64748B;font-size:14px;line-height:1.7;margin-bottom:28px}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;text-align:left}
+.feat{background:#F8FAFC;border-radius:10px;padding:10px 12px;font-size:12px;color:#475569;display:flex;align-items:center;gap:8px}
+.feat span{font-size:18px}
+.btn{background:linear-gradient(135deg,#1A56DB,#0F3490);color:#fff;border:none;padding:16px 32px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;width:100%;transition:all .2s;letter-spacing:.02em}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(26,86,219,.4)}
+.btn:disabled{background:#94A3B8;cursor:not-allowed;transform:none;box-shadow:none}
+.prog{margin-top:18px;font-size:13px;color:#64748B;min-height:22px}
+.bar-wrap{background:#E2E8F0;border-radius:100px;height:6px;margin-top:10px;overflow:hidden;display:none}
+.bar{height:100%;background:linear-gradient(90deg,#1A56DB,#4D82FF);border-radius:100px;width:0%;transition:width .3s}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">🅿</div>
+  <div class="badge">62 SLIDES • ĐẦY ĐỦ NỘI DUNG BÁO CÁO</div>
+  <h1>ParkConnect</h1>
+  <p class="sub">Tạo file PowerPoint (.pptx) với đầy đủ 62 slide, giữ nguyên tiêu đề theo cấu trúc báo cáo (1.1.1, 1.1.2a, 2.1.1...), phong cách hiện đại công nghệ.</p>
+  <div class="features">
+    <div class="feat"><span>📋</span>62 slides chi tiết</div>
+    <div class="feat"><span>🎨</span>Style tech hiện đại</div>
+    <div class="feat"><span>🔢</span>Tiêu đề theo báo cáo</div>
+    <div class="feat"><span>👥</span>MSSV từng thành viên</div>
+    <div class="feat"><span>📊</span>Số liệu tài chính đầy đủ</div>
+    <div class="feat"><span>⬇</span>Tải về máy ngay</div>
+  </div>
+  <button class="btn" id="btn" onclick="gen()">⬇ Tạo & Tải PowerPoint</button>
+  <div class="prog" id="prog"></div>
+  <div class="bar-wrap" id="bw"><div class="bar" id="bar"></div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js"></script>
+<script>
+async function gen(){
+  const btn=document.getElementById('btn'),prog=document.getElementById('prog'),bw=document.getElementById('bw'),bar=document.getElementById('bar');
+  btn.disabled=true;btn.textContent='⏳ Đang tạo...';bw.style.display='block';
+  const steps=['Khởi tạo...','Slide bìa & thành viên...','Phần 1 – Tổng quan...','Phần 2 – PESTEL & Vi mô...','Phần 3 – Tổ chức & Tài chính...','Phần 4,5,6 – Rủi ro & Lộ trình...','Xuất file PowerPoint...'];
+  let si=0;
+  function setP(t,p){prog.textContent=steps[si++]||t;bar.style.width=p+'%';}
+
+  const pptx=new PptxGenJS();
+  pptx.layout='LAYOUT_WIDE';
+  pptx.title='ParkConnect – Dự án Kinh doanh Quốc tế';
+  pptx.author='Nhóm 2 IB0003 UEH';
+  const W=13.33,H=7.5;
+  const C={bd:'0F3490',bm:'1A56DB',bl:'4D82FF',blt:'EEF4FF',
+            w:'FFFFFF',g0:'F8FAFC',g2:'E2E8F0',g5:'64748B',g7:'334155',g9:'0F172A',
+            gr:'10B981',am:'F59E0B',rd:'EF4444',navy:'1E3A8A'};
+
+  setP('',5);await p(20);
+
+  // ── COVER ──────────────────────────────────────────
+  {let s=pptx.addSlide();
+  s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:H,fill:{color:C.bd}});
+  s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:4.5,h:H,fill:{color:'1445B8'},transparency:55});
+  s.addShape(pptx.ShapeType.rect,{x:0,y:H-0.12,w:W,h:0.12,fill:{color:C.bl}});
+  s.addText('🅿',{x:0.7,y:0.7,w:2,h:2,fontSize:80,align:'center',color:C.w});
+  s.addText('PARKCONNECT',{x:0.5,y:2.7,w:12.5,h:1.3,fontSize:50,bold:true,color:C.w,fontFace:'Arial',charSpacing:4,wrap:true});
+  s.addText('Ứng dụng kết nối chủ bãi đỗ xe với người lái xe',{x:0.5,y:3.9,w:12.5,h:0.7,fontSize:19,color:'B3CCFF',fontFace:'Arial'});
+  s.addShape(pptx.ShapeType.rect,{x:0.5,y:4.8,w:12,h:0.04,fill:{color:'1E3A8A'}});
+  s.addText('Bộ GD&ĐT  •  Đại học Kinh tế TP. Hồ Chí Minh  •  Trường Kinh doanh  •  Khoa KDQT - Marketing',{x:0.5,y:5.0,w:12.5,h:0.4,fontSize:12,color:'94A3B8',fontFace:'Arial'});
+  s.addText('Học phần: Dự án Kinh doanh Quốc tế  •  Mã lớp: 26D1BUS50301303  •  GVHD: Ts. Đinh Thị Thu Oanh',{x:0.5,y:5.4,w:12.5,h:0.4,fontSize:12,color:'94A3B8',fontFace:'Arial'});
+  s.addText('Nhóm 2  •  Lớp IB0003  •  Khóa 49  •  TP. Hồ Chí Minh, ngày 06/06/2026',{x:0.5,y:5.85,w:12.5,h:0.4,fontSize:12,color:'64748B',fontFace:'Arial'});}
+
+  // ── MEMBERS ─────────────────────────────────────────
+  {let s=pptx.addSlide();
+  s.background={color:C.g0};
+  s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:1.4,fill:{color:C.bd}});
+  s.addShape(pptx.ShapeType.rect,{x:0,y:1.4,w:W,h:0.07,fill:{color:C.bl}});
+  s.addText('THÀNH VIÊN NHÓM 2',{x:0.5,y:0.15,w:12,h:0.65,fontSize:28,bold:true,color:C.w,fontFace:'Arial'});
+  s.addText('Lớp IB0003  •  Khóa 49  •  Đại học Kinh tế TP. Hồ Chí Minh',{x:0.5,y:0.82,w:12,h:0.45,fontSize:14,color:'B3CCFF',fontFace:'Arial'});
+  const mems=[{n:'01',nm:'Nguyễn Xuân Mai',id:'31231022594'},{n:'02',nm:'Hoàng Thị Thùy Dương',id:'31231021003'},{n:'03',nm:'Văn Mỹ Xuân',id:'31231024827'},{n:'04',nm:'Võ Nguyên Thắng',id:'31231026274'},{n:'05',nm:'Lê Anh Tài',id:'31231026359'}];
+  const pos=[{x:0.3,y:1.65},{x:4.1,y:1.65},{x:7.9,y:1.65},{x:2.2,y:4.2},{x:6.0,y:4.2}];
+  mems.forEach(({n,nm,id},i)=>{
+    const{x,y}=pos[i],w=3.7,h=2.2;
+    s.addShape(pptx.ShapeType.rect,{x,y,w,h,fill:{color:C.w},line:{color:C.g2,width:1},shadow:{type:'outer',blur:6,offset:2,angle:45,color:'000000',opacity:.08}});
+    s.addShape(pptx.ShapeType.rect,{x,y,w,h:0.52,fill:{color:C.bm}});
+    s.addText(n,{x,y:y+0.06,w,h:0.42,fontSize:18,bold:true,color:C.w,align:'center',fontFace:'Arial'});
+    s.addText(nm,{x:x+0.1,y:y+0.62,w:w-0.2,h:0.85,fontSize:14,bold:true,color:C.g9,align:'center',wrap:true,fontFace:'Arial',valign:'middle'});
+    s.addShape(pptx.ShapeType.rect,{x:x+0.35,y:y+1.55,w:w-0.7,h:0.03,fill:{color:C.g2}});
+    s.addText('MSSV: '+id,{x,y:y+1.65,w,h:0.4,fontSize:13,color:C.bm,align:'center',bold:true,fontFace:'Arial'});
+  });}
+
+  setP('',12);await p(20);
+
+  // ── HELPERS ─────────────────────────────────────────
+  function hdr(s,sec,title){
+    s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:1.38,fill:{color:C.bm}});
+    s.addShape(pptx.ShapeType.rect,{x:0,y:1.38,w:W,h:0.07,fill:{color:C.bl}});
+    s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:0.14,h:1.38,fill:{color:C.bd}});
+    s.addText(sec,{x:0.3,y:0.08,w:12.8,h:0.4,fontSize:11,bold:true,color:'B3CCFF',fontFace:'Arial',charSpacing:2});
+    s.addText(title,{x:0.3,y:0.46,w:12.8,h:0.86,fontSize:20,bold:true,color:C.w,fontFace:'Arial',wrap:true,valign:'middle'});
+  }
+
+  function addC(sec,title,items){
+    let s=pptx.addSlide();
+    s.background={color:C.g0};
+    hdr(s,sec,title);
+    let y=1.62;
+    items.forEach(item=>{
+      if(item.startsWith('##')){
+        let t=item.slice(2).trim();
+        s.addShape(pptx.ShapeType.rect,{x:0.38,y,w:12.6,h:0.5,fill:{color:C.blt},line:{color:'D9E5FF',width:0.5}});
+        s.addText(t,{x:0.56,y:y+0.08,w:12.2,h:0.36,fontSize:12.5,bold:true,color:C.bm,fontFace:'Arial',wrap:true});
+        y+=0.56;
+      } else {
+        s.addShape(pptx.ShapeType.rect,{x:0.38,y:y+0.19,w:0.1,h:0.1,fill:{color:C.bm}});
+        s.addText(item,{x:0.62,y,w:12.2,h:0.48,fontSize:13.5,color:C.g7,fontFace:'Arial',wrap:true});
+        y+=0.5;
+      }
+    });
+  }
+
+  function addSec(num,title,subs){
+    let s=pptx.addSlide();
+    s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:H,fill:{color:C.bd}});
+    s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:0.55,h:H,fill:{color:C.bl}});
+    s.addShape(pptx.ShapeType.rect,{x:0,y:H-1.4,w:W,h:1.4,fill:{color:C.navy}});
+    s.addText('PHẦN',{x:1,y:0.75,w:5,h:0.6,fontSize:13,bold:true,color:'4D82FF',fontFace:'Arial',charSpacing:12});
+    s.addText(num,{x:0.7,y:1.1,w:3.5,h:2.8,fontSize:130,bold:true,color:'1445B8',fontFace:'Arial'});
+    s.addText(title,{x:1,y:2.9,w:11.8,h:1.5,fontSize:34,bold:true,color:C.w,fontFace:'Arial',wrap:true});
+    subs.forEach((sub,i)=>s.addText('→  '+sub,{x:1,y:4.55+i*0.42,w:11.8,h:0.4,fontSize:13,color:'94A3B8',fontFace:'Arial'}));
+  }
+
+  function p(ms){return new Promise(r=>setTimeout(r,ms));}
+
+  // ── TOC ─────────────────────────────────────────────
+  addC('MỤC LỤC','Nội dung trình bày',['##Phần 1 – Tổng quan dự án','##Phần 2 – Phân tích môi trường kinh doanh (PESTEL + Porter\'s Five Forces)','##Phần 3 – Phân tích hoạt động dự án (Tổ chức – Chi phí – Doanh thu – Hòa vốn)','##Phần 4 – Quản trị rủi ro dự án','##Phần 5 – Đánh giá hiệu quả dự án (Balanced Scorecard)','##Phần 6 – Dự án trong giai đoạn kế tiếp & Tầm nhìn dài hạn']);
+
+  setP('',20);await p(20);
+
+  // ══ PHẦN 1 ══════════════════════════════════════════
+  addSec('1','TỔNG QUAN DỰ ÁN',['1.1 – Xác định sản phẩm kinh doanh','1.2 – Xác định địa điểm kinh doanh','1.3 – Xác định thị trường và khách hàng mục tiêu']);
+  addC('1.1','Xác định sản phẩm kinh doanh',['ParkConnect: nền tảng kỹ thuật số hai chiều chuyên về quản lý và đặt chỗ đỗ xe thông minh','Vận hành trên môi trường ứng dụng di động (iOS & Android)','Bao gồm: giao diện người dùng + giao diện quản trị chủ bãi + hạ tầng công nghệ','Không xây thêm bãi xe – làm bãi hiện có hoạt động thông minh hơn','Giải quyết đồng thời vấn đề từ phía người dùng và chủ bãi xe']);
+  addC('1.1.1','Tên, nhận diện và phạm vi sản phẩm',['Tên: PARKCONNECT – "Park" (đỗ xe) + "Connect" (kết nối)','Triết lý: kết nối bãi đỗ xe và người lái xe trong một hệ sinh thái khép kín','Phạm vi ban đầu: TP.HCM và Hà Nội – áp lực đỗ xe cao nhất, thanh toán điện tử phổ biến','Lộ trình mở rộng: 15 thành phố lớn trong vòng 3 năm đầu vận hành','Sản phẩm không chỉ là app tra cứu – là hệ sinh thái vận hành khép kín']);
+  addC('1.1.2a','Vấn đề thực tế – Góc nhìn từ phía người dùng',['Nỗi đau 1 – Không chắc chắn: không biết bãi còn chỗ cho đến khi đến nơi','Nỗi đau 2 – Lãng phí thời gian: trung bình 15–25 phút/ngày tìm chỗ đỗ (~150 giờ/năm)','Nỗi đau 3 – Rủi ro tài sản: bãi thủ công, không camera, không bảo hiểm, không xác thực','Không có công cụ đặt hộ cho người thân hoặc đồng nghiệp','71% người dùng đang "chạy vòng quanh cho đến khi thấy bãi" – rất thiếu hiệu quả']);
+  addC('1.1.2b','Vấn đề thực tế – Góc nhìn từ phía chủ bãi xe',['Không có dữ liệu lượng xe vào ra theo giờ','Không biết chỗ nào trống, chỗ nào có xe theo thời gian thực','Không phân bổ được giữa khách đặt trước và khách vãng lai','Tỷ lệ lấp đầy trung bình chỉ 55–65% – bỏ phí doanh thu đáng kể','Vận hành hoàn toàn thủ công: ghi vé giấy, thu tiền mặt']);
+  addC('1.1.2c','Giải pháp tổng thể của ParkConnect',['Kết nối nền tảng duy nhất – giải quyết đồng thời cả hai phía cung và cầu','Hiển thị chỗ trống real-time, cho phép đặt và thanh toán trước','Trang bị dashboard vận hành và phân tích dữ liệu cho chủ bãi','Không xây thêm bãi – tối ưu hóa bãi hiện có','Tương tự mô hình Grab (gọi xe) và Airbnb (lưu trú) – network effect hai chiều']);
+  addC('1.1.3a','Đối tượng phục vụ – Người dùng (Nhóm khách hàng cá nhân)',['Người điều khiển phương tiện cá nhân tại đô thị: xe máy, ô tô, SUV','Độ tuổi 22–45, nhân viên văn phòng, chuyên gia, doanh nhân, thu nhập trung bình trở lên','Đến khu trung tâm ≥3 lần/tuần, quen dùng smartphone & thanh toán điện tử','Sẵn sàng chi thêm 10.000–15.000 VNĐ/lượt để đỗ xe tiện lợi, chắc chắn','56,8% sẵn sàng chuyển sang ParkConnect nếu giải quyết được khó khăn hiện tại']);
+  addC('1.1.3b','Đối tượng phục vụ – Chủ bãi xe (Nhóm đối tác vận hành)',['Chủ sở hữu/quản lý bãi xe tư nhân quy mô 10–200 chỗ','Bãi ngầm TTTM, bãi độc lập, tòa nhà văn phòng, khu đô thị','Vận hành truyền thống: thu tiền mặt, không hệ thống quản lý số','Nhu cầu số hóa cao nhưng không có nguồn lực tự phát triển','Rào cản gia nhập cực thấp: chỉ cần điện thoại cài app quản lý là vận hành được']);
+  addC('1.1.4','Tính năng cốt lõi của ứng dụng – Tổng quan',['##a) Tìm kiếm và xem thông tin thời gian thực','##b) Sơ đồ chỗ đỗ và phân tách khu vực','##c) Đặt chỗ, khai báo biển số và tính năng đặt hộ','##d) Xác thực QR và vận hành cổng bãi xe','##e) Gia hạn giờ đỗ ngay trên ứng dụng','##f) Thanh toán đa kênh, không tiền mặt']);
+  addC('1.1.4a','Tính năng – Tìm kiếm và xem thông tin thời gian thực',['Tìm theo tên địa điểm, khu vực, địa chỉ hoặc GPS vị trí hiện tại','Hiển thị: số chỗ trống, giá/giờ, khoảng cách, điểm đánh giá, tiện ích','Chuyển đổi linh hoạt: chế độ danh sách ↔ chế độ bản đồ','Lọc theo: loại xe (xe máy, ô tô, SUV, xe điện), khu vực, tiện ích (mái che, camera, EV)','Dữ liệu cập nhật liên tục – live từ bãi xe đối tác']);
+  addC('1.1.4b','Tính năng – Sơ đồ chỗ đỗ và phân tách khu vực',['Hiển thị sơ đồ bãi xe trực quan theo từng tầng và hàng','Màu sắc trạng thái: xanh lá (trống), xám (có xe), xanh dương (đã chọn), cam vàng (vãng lai)','Phân tách vật lý Khu đặt trước vs Khu vãng lai ngay trên sơ đồ','Khu đặt trước: biển hiệu màu xanh, sơn kẻ nền, trụ chắn từng ô','Tỷ lệ phân chia do chủ bãi tự quyết định và điều chỉnh linh hoạt theo khung giờ']);
+  addC('1.1.4c','Tính năng – Đặt chỗ, khai báo biển số và tính năng đặt hộ',['Luồng tối giản: chọn ô → nhập biển số → chọn giờ → thanh toán (≤6 thao tác)','Biển số bắt buộc – liên kết trực tiếp với mã QR xác thực tại cổng','Chỗ giữ tối đa 30 phút – quá giờ tự động hủy, không hoàn tiền','Đặt hộ: khai báo biển số xe người thân/đồng nghiệp thay cho xe của mình','Camera LPR tự động nhận diện biển số – người được đặt hộ vào bãi không cần thao tác gì']);
+  addC('1.1.4d','Tính năng – Xác thực QR và vận hành cổng bãi xe',['Sau thanh toán: hệ thống sinh QR động chứa chữ ký số','QR gắn kết: mã đặt chỗ + biển số + ô đỗ cụ thể + khung giờ hợp lệ','Offline-capable: xác thực ngay cả khi mất mạng di động','Kết hợp camera LPR xác thực hai lớp (QR + biển số)','Xử lý ngoại lệ: đến muộn, lỗi QR, mất kết nối, biển số không khớp']);
+  addC('1.1.4e','Tính năng – Gia hạn giờ đỗ ngay trên ứng dụng',['Thông báo khi còn 15 phút trước giờ hết hạn','Gia hạn ngay trên điện thoại: +30 phút / +1 giờ / +2 giờ / +3 giờ','Không cần ra khỏi xe hay tìm nhân viên','Hệ thống kiểm tra tự động xem chỗ đó đã được đặt tiếp chưa','Phí gia hạn trừ tự động từ ví điện tử đã liên kết']);
+  addC('1.1.4f','Tính năng – Thanh toán đa kênh, không tiền mặt',['Hỗ trợ: MoMo, ZaloPay, VNPay, thẻ ngân hàng nội địa/quốc tế (Visa/Mastercard)','Tùy chọn tiền mặt tại quầy cho khách chưa có tài khoản số','Mã hóa SSL 256-bit – thông tin thẻ không lưu trên server ParkConnect','Xử lý qua cổng thanh toán được cấp phép bởi NHNN Việt Nam','Sau thanh toán: sinh QR duy nhất, offline-capable ngay lập tức']);
+  addC('1.1.5','Quản lý lưu thông xe vào/ra và xử lý ùn tắc',['Quét QR + camera LPR: hai lớp xác thực, giảm ùn tắc cổng giờ cao điểm','Đến muộn >30 phút: ô đỗ cho khách vãng lai tạm thời, người đặt không hoàn tiền','Lỗi mã QR (hết pin, app lỗi): nhân viên tra thủ công qua biển số hoặc họ tên','Hệ thống mất kết nối: QR offline-capable xác thực cục bộ, đồng bộ khi phục hồi','Bãi đầy hoàn toàn: tự động dừng nhận đặt mới, gợi ý bãi thay thế trong 500m']);
+  addC('1.2.1','Thị trường mục tiêu – Khu vực triển khai',['Giai đoạn 1: Quận 1, Quận 3, Quận 5, Quận 10 – tổng 16,73 km²','Tập trung tòa nhà văn phòng hạng A, TTTM, bệnh viện, cơ quan hành chính','Nhu cầu đỗ xe thường xuyên và ổn định – lý tưởng kiểm chứng sản phẩm','102.400 ô tô đăng ký mới tại TP.HCM năm 2025 – cao nhất cả nước','Khoảng trống thị trường: cần 550 ha bãi đỗ, chỉ có 2,69 ha (<0,5%)']);
+  addC('1.2.2','Lựa chọn và phân tích địa chỉ văn phòng',['Mô hình làm việc hybrid – tối ưu chi phí, phù hợp startup giai đoạn đầu','Giải pháp: Coworking space tại cirCO Điện Biên Phủ (Quận 3)','Gói văn phòng ảo: 400.000 VNĐ/tháng – địa chỉ kinh doanh + lễ tân + bảng tên','7 vị trí hot desk: 3.000.000 VNĐ/người/tháng × 7 = 21.000.000 VNĐ/tháng','Tổng chi phí văn phòng: ~21 triệu VNĐ/tháng']);
+  addC('1.3','Xác định thị trường và khách hàng mục tiêu',['B2C (End Users): lái xe ô tô 22–45 tuổi tại TP.HCM, đến trung tâm ≥3 lần/tuần','B2B (Parking Operators): chủ bãi tư nhân SME 10–200 chỗ, vận hành truyền thống','50,3% người được hỏi lái xe ít nhất 3 lần/tuần','56,8% sẵn sàng chuyển sang ParkConnect nếu giải quyết được khó khăn hiện tại','ParkConnect cung cấp giải pháp trọn gói chi phí thấp hơn tự đầu tư công nghệ']);
+
+  setP('',38);await p(20);
+
+  // ══ PHẦN 2 ══════════════════════════════════════════
+  addSec('2','PHÂN TÍCH MÔI TRƯỜNG KINH DOANH',['2.1 – Môi trường vĩ mô (PESTEL)','2.2 – Môi trường vi mô']);
+  addC('2.1.1','Yếu tố Chính trị (Political)',['Việt Nam top 41/163 quốc gia hòa bình & ổn định (GPI 2024)','Chương trình Chuyển đổi số quốc gia 2021–2025 (QĐ 942/QĐ-TTg)','TP.HCM: định hướng đô thị thông minh 2022–2025, tầm nhìn đến 2030','Ứng dụng IoT, AI, Big Data vào quản lý hạ tầng đô thị – cơ hội hợp tác công tư']);
+  addC('2.1.2','Yếu tố Kinh tế (Economic)',['GDP Việt Nam 2024: tăng 7,09% – cao nhất Đông Nam Á (IMF, 2025)','GDP bình quân TP.HCM: ~7.000 USD/người | 102.400 ô tô mới đăng ký 2025','Ùn tắc gây thiệt hại 138.000 tỷ đồng/năm (Sở GTVT TP.HCM, 2022)','Khoảng trống thị trường: cần 550 ha bãi đỗ, chỉ có 2,69 ha (<0,5% nhu cầu)']);
+  addC('2.1.3','Yếu tố Xã hội (Social)',['Dân số 2026: 102,6 triệu, 50% dưới 35 tuổi – Millennials & Gen Z chủ đạo','78 triệu người dùng internet di động, 90% qua smartphone (Google/Temasek, 2024)','Thanh toán không tiền mặt tăng từ 4,9% (2019) lên 19,9% (2023)','70% người khảo sát đánh giá tính năng cashless là hấp dẫn']);
+  addC('2.1.4','Yếu tố Công nghệ (Technological)',['4G phủ sóng 99% dân số, 5G triển khai thương mại tại TP.HCM & Hà Nội','Cloud computing (AWS/GCP): startup package ~3–7 triệu/tháng','Chi phí cảm biến IoT giảm 60–70% trong 5 năm: 300.000–800.000 VNĐ/cảm biến','Kiến trúc microservices trên cloud: mở rộng linh hoạt theo user thực tế']);
+  addC('2.1.5','Yếu tố Môi trường (Environmental)',['Giao thông chiếm 30–40% CO₂ tại TP.HCM, ~13 triệu tấn/năm (CESTI, 2025)','PM2.5 trung bình TP.HCM: 28,6 µg/m³ – cao hơn 3–5 lần khuyến nghị WHO','Cruising (tìm chỗ đỗ) chiếm 30% lưu lượng giao thông khu trung tâm (Shoup, 2006)','ParkConnect giảm quãng đường tìm kiếm → gián tiếp giảm phát thải CO₂']);
+  addC('2.1.6','Yếu tố Pháp lý (Legal)',['Luật Doanh nghiệp 2020 (cập nhật 2025): đăng ký DN rút ngắn còn 3–5 ngày','Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân – cần tuân thủ từ đầu','ParkConnect là trung gian – không trực tiếp chịu nghĩa vụ pháp lý bãi xe','Cần đảm bảo đối tác bãi xe tuân thủ: giấy phép, PCCC, quy hoạch']);
+  addC('2.1.7','Tổng kết PESTEL',['##4 yếu tố thuận lợi quyết định:','(1) Kinh tế tăng trưởng → tầng lớp trung lưu sẵn sàng chi trả','(2) Dân số trẻ & am hiểu công nghệ → tỷ lệ adoption cao','(3) Khoảng trống cung–cầu khổng lồ → bài toán cấp thiết','(4) Hạ tầng công nghệ & đô thị thông minh → nền tảng sẵn có','Rủi ro pháp lý & công nghệ: kiểm soát được với kế hoạch tuân thủ phù hợp']);
+  addC('2.2.1','Phân tích nhu cầu và hành vi khách hàng',['Maslow: nhu cầu an toàn (78% coi trọng an ninh), xã hội (65% tin đánh giá cộng đồng)','Engel, Kollat & Blackwell: 71% đang ở giai đoạn tìm kiếm rất thiếu hiệu quả','Herzberg – Động cơ: tiết kiệm thời gian (82%), minh bạch giá cả (76%), chắc chắn có chỗ','Herzberg – Duy trì: bảo mật thông tin cá nhân, độ ổn định ứng dụng','68% lo ngại "đặt chỗ rồi nhưng đến nơi bãi báo hết chỗ" – rào cản niềm tin lớn nhất']);
+  addC('2.2.2','Kết quả khảo sát thị trường (346 người – 26/04 đến 05/05/2026)',['55% lái xe ≥3 lần/tuần | 65% không biết bãi nào còn trống (pain point cốt lõi)','45% chưa biết đến ứng dụng đỗ xe nào – thị trường còn nhiều dư địa','75% đánh giá bản đồ real-time hấp dẫn (≥4/5) | 72% muốn đặt & giữ chỗ trước','70% muốn cashless | 60% sẵn sàng chuyển sang ParkConnect','Mức phí chấp nhận: 10.000–15.000 VNĐ/lượt | Lo ngại lớn nhất: bảo mật thanh toán (70%)']);
+  addC('2.2.3a','Phân tích đối thủ – My Parking (Viettel)',['Triển khai từ 2018: ~30 tuyến đường trung tâm, 12.000+ vị trí đỗ xe','Điểm mạnh: hậu thuẫn Viettel, thương hiệu lớn, hạ tầng viễn thông sẵn có','Điểm yếu: lỗ vận hành 2021–2024 (thâm hụt 2 tỷ), 30% giao dịch không đóng phí','Không có tính năng đặt chỗ trước – chỉ thu phí và hiển thị thông tin','Đang bị HĐND TP.HCM yêu cầu đấu thầu lại → cơ hội cho ParkConnect']);
+  addC('2.2.3b','Phân tích đối thủ – iParking (VETC)',['Triển khai từ 18/04/2025: 20 tuyến đường Q1, Q5, Q10','Điểm mạnh: tận dụng hệ sinh thái ETC (4 triệu thẻ RFID), thanh toán tự động 2 lớp','Điểm yếu: chỉ thu phí, không có tìm kiếm/đặt chỗ/bản đồ/sơ đồ ô','Đòi hỏi thẻ RFID – rào cản adoption cao với người dùng mới','Kết luận: có thể hợp tác tích hợp thay vì cạnh tranh trực tiếp']);
+  addC('2.2.3c','So sánh 3 nền tảng – ParkConnect vs đối thủ',['##Tính năng                          ParkConnect   My Parking   iParking','Tìm kiếm real-time                  ✓             ✗            ✗','Đặt chỗ trước + Sơ đồ ô đỗ         ✓             ✗            ✗','Đặt hộ người khác (USP độc đáo)     ✓             ✗            ✗','Phủ bãi SME tư nhân                 ✓             ✗            ✗','Dashboard phân tích cho chủ bãi     ✓             ✗            ✗','Thanh toán đa kênh (không RFID)     ✓             ✓            ✗']);
+  addC('2.2.4','Phân tích Năm lực lượng cạnh tranh (Porter\'s Five Forces)',['Cạnh tranh nội bộ: THẤP – chưa có đối thủ nào xây nền tảng hai chiều hoàn chỉnh','Đối thủ mới gia nhập: TRUNG BÌNH – rào cản network effect tăng dần khi đủ quy mô','Sức mạnh nhà cung cấp (bãi xe): CAO ban đầu → giảm khi ≥50 bãi neo','Sức mạnh người mua: TRUNG BÌNH – chi phí chuyển đổi thấp giai đoạn đầu','Sản phẩm thay thế: CAO – thói quen truyền thống, Grab/Google Maps tiềm ẩn','Kết luận: Cửa sổ cơ hội rõ ràng – cần chiếm thị trường nhanh']);
+
+  setP('',55);await p(20);
+
+  // ══ PHẦN 3 ══════════════════════════════════════════
+  addSec('3','PHÂN TÍCH HOẠT ĐỘNG DỰ ÁN',['3.1 – Xây dựng cơ cấu tổ chức','3.2 – Dự toán Chi phí và Doanh thu','3.3 – Xác định điểm hòa vốn']);
+  addC('3.1.1','Mô hình tổ chức và lý luận lựa chọn',['Mô hình chức năng (Functional Organizational Structure) – Mintzberg (1979)','Phù hợp startup quy mô nhỏ giai đoạn tăng trưởng sớm','Tối đa hóa hiệu quả qua chuyên môn hóa sâu | Mỗi NV chỉ có 1 cấp trên trực tiếp','Nguyên tắc Lean Startup: chỉ tuyển khi thực sự cần thiết','Tổng nhân sự: 14 người (1 CEO + 13 nhân viên)']);
+  addC('3.1.2','Sơ đồ tổ chức',['##CEO (1 người) – Trung tâm điều phối','Phòng Kinh doanh: 1 Trưởng phòng + 2 Nhân viên','Phòng Nhân sự – Hành chính: 1 người','Phòng Công nghệ Thông tin: Tech Lead + 2 Backend/App Dev + 1 UI/UX','Phòng Tài chính – Kế toán: Kế toán trưởng + 1 Kế toán viên','Phòng Marketing: 1 Chiến lược + 1 Design + 1 Ads & Seeding']);
+  addC('3.1.3','Mô tả chi tiết từng vị trí – CEO & Phòng Kinh doanh',['CEO (1): chiến lược, gọi vốn, đại diện thương hiệu, kiêm thủ quỹ – 30 triệu/tháng','Trưởng phòng KD (1): xây quy trình, quản lý đội, ký kết bãi xe cấp cao – 15 triệu','NV KD (2): tiếp cận thực địa theo khu vực địa lý phân công – 7–9 triệu + KPI','##KPI chính:','Số bãi ký kết/tháng, tỷ lệ bãi gia hạn ≥80% sau tháng 6','Mục tiêu Giai đoạn 1: ký 20–30 bãi xe tại Q1 và Q3']);
+  addC('3.1.3','Mô tả chi tiết từng vị trí – CNTT & Marketing & Tài chính',['Tech Lead (1): kiến trúc microservices, quản lý tiến độ – 18–25 triệu','Backend Dev (2): API, real-time, tích hợp thanh toán/Maps – 10–13 triệu/người','UI/UX (1): giao diện iOS & Android, luồng ≤3 bước – 8–12 triệu','Marketing (3): chiến lược + design + ads & seeding – 7–10 triệu','Kế toán trưởng (1): báo cáo tài chính, thuế, dòng tiền – 12–15 triệu','Kế toán viên (1) + Nhân sự–Hành chính (1): 8–10 triệu']);
+  addC('3.2.1','Dự toán chi phí đầu tư ban đầu',['##Mục A – Thành lập doanh nghiệp: ~6,55 triệu','Đăng ký, khắc dấu, tư vấn pháp lý (hợp đồng mẫu, TOS, Privacy Policy)','##Mục B – Văn phòng & cơ sở vật chất ban đầu: 21 triệu','Đặt cọc 1 tháng hot desk tại cirCO Điện Biên Phủ','##Mục C – Phát triển ứng dụng: ~47 triệu','App Store 2,6M + Play Console 700K + Cloud 5–10M + Pentest bảo mật 20–30M','##TỔNG ĐẦU TƯ BAN ĐẦU: ~74,55 triệu VNĐ | Vốn tự thân: 1 tỷ VNĐ']);
+  addC('3.2.2a','Chi phí vận hành hàng tháng – Chi phí cố định (Fixed Costs)',['Lương nhân sự 13 người (bao gồm BHXH/BHYT/BHTN 21,5%): 160 triệu/tháng','Văn phòng cirCO Điện Biên Phủ (điện, nước, internet, lễ tân): 21 triệu/tháng','Cloud infrastructure AWS/GCP production: 8 triệu/tháng','Phần mềm công cụ (Slack, Notion, Figma, Jira): 3 triệu/tháng','Bảo hiểm & chi phí pháp lý định kỳ (kiểm toán, tư vấn): 2 triệu/tháng','##TỔNG CHI PHÍ CỐ ĐỊNH: 194 triệu/tháng']);
+  addC('3.2.2b','Chi phí vận hành hàng tháng – Chi phí biến đổi (Variable Costs)',['Marketing & Quảng cáo (Facebook/Google Ads): 20 triệu/tháng','Chi phí SMS/OTP xác thực (~500đ/SMS × số giao dịch): 3 triệu/tháng','Phí API bên thứ ba (Maps, Payment gateway): 5 triệu/tháng','Hoa hồng nhân viên (1–1,5%/giao dịch): 20 triệu/tháng','Chi phí di chuyển nhân viên kinh doanh/đối tác: 3,5 triệu/tháng','Khác (in ấn, quà tặng đối tác, chi phí phát sinh): 4 triệu/tháng','##TỔNG CHI PHÍ BIẾN ĐỔI: 53,5 triệu/tháng']);
+  addC('3.2.3a','Dự toán doanh thu – Cơ cấu giá bán và nguồn thu',['##Giai đoạn 1: Hoa hồng giao dịch 21–23% / lượt đỗ thành công','##Giai đoạn 2: + Phí sàn Basic 850.000 VNĐ/bãi/tháng + Gói Premium 882K + Ultra 2,565M/quý','##Giai đoạn 3: + Phí sàn VIP 4.500.000 VNĐ/bãi/tháng + Quảng cáo CPC/CPM','##Giai đoạn 4: Tất cả nguồn thu vận hành đồng thời – hệ sinh thái hoàn chỉnh','Chiến lược: cuốn chiếu theo quy mô – không thu phí cố định khi chưa đủ network']);
+  addC('3.2.3b','Dự toán doanh thu – Lộ trình triển khai các nguồn thu',['GĐ1 (Ra mắt): chỉ hoa hồng giao dịch → giảm tối đa rào cản gia nhập cho chủ bãi','GĐ2 (Tăng tốc): + Phí sàn Basic + Gói Premium/Ultra → đa dạng hóa dòng tiền','GĐ3 (Mở rộng): + Phí sàn VIP + Quảng cáo → khai thác lượng người dùng lớn','GĐ4 (Ổn định): tất cả nguồn thu vận hành đồng thời → hệ sinh thái hoàn chỉnh','Chiến lược tương tự Grab, Airbnb: tập trung user trước, monetize sau']);
+  addC('3.2.3c','Dự toán doanh thu – Giai đoạn 1 (Tháng 1–3)',['Giả định: 2.500 users | 15 bãi xe | 15 lượt/ngày/bãi | 90% thành công = 203 lượt/ngày','Giá TB: 30.000 VNĐ | Hoa hồng 23%','Doanh thu: 203 × 6.900 × 30 = 42.021.000 VNĐ/tháng','Tổng chi phí: 247,5 triệu/tháng (cố định 194M + biến đổi 53,5M)','##KẾT QUẢ: Lỗ 205.479.000 VNĐ/tháng','WACMR: -27,31% → Điểm hòa vốn KHÔNG TỒN TẠI – giai đoạn đốt tiền mua network']);
+  addC('3.2.3c','Dự toán doanh thu – Giai đoạn 2 (Tháng 4–6)',['Giả định: 5.500 users | 30 bãi | 22 lượt/ngày/bãi | 92% = 607 lượt/ngày','Hoa hồng (23%): 125.690.400 VNĐ | Phí sàn Basic (15 bãi): 12.750.000 VNĐ','Gói Premium (55 users × 882K): 48.510.000 VNĐ | Ultra (17 users × 2,565M): 42.322.500 VNĐ','##TỔNG: 229.272.900 VNĐ/tháng | Chi phí: 360 triệu','##KẾT QUẢ: Lỗ 130.727.100 VNĐ/tháng','WACMR đảo chiều dương: 65,11% – tín hiệu tích cực']);
+  addC('3.2.3c','Dự toán doanh thu – Giai đoạn 3 (Tháng 7–12)',['Giả định: 9.000 users | 55 bãi | 26 lượt/ngày/bãi | 94% = 1.344 lượt/ngày','Hoa hồng (22%): 266.151.600 | Basic (30 bãi): 27M | VIP (15 bãi×4,5M): 67,5M','Premium (225 users×882K): 198.450.000 | Ultra (63 users×2,565M): 161.595.000','Quảng cáo: 35.000.000 VNĐ','##TỔNG: 753.734.100 VNĐ/tháng | Chi phí: 620 triệu','##LÃI SAU THUẾ: 106.987.280 VNĐ ✓  ← CHÍNH THỨC HÒA VỐN']);
+  addC('3.2.3c','Dự toán doanh thu – Giai đoạn 4 (Tháng 13–18)',['Giả định: 13.000 users | 85 bãi | 30 lượt/ngày/bãi | 95% = 2.423 lượt/ngày','Hoa hồng (21%): 457.852.500 | Basic (50 bãi): 42.627.500 | VIP (25 bãi): 110.925.000','Premium (520 users×882K): 458.640.000 | Ultra (130 users×2,565M): 333.450.000','Quảng cáo: 100.000.000 VNĐ','##TỔNG: 1.438.495.000 VNĐ/tháng | Chi phí: 1,168 tỷ','##LÃI SAU THUẾ: 215.780.080 VNĐ/tháng']);
+  addC('3.2.3d','Tổng hợp doanh thu 4 giai đoạn',['##GĐ1 (T1–3): DT 42 triệu | CP 247,5 triệu | Lỗ 205 triệu/tháng','##GĐ2 (T4–6): DT 229 triệu | CP 360 triệu | Lỗ 131 triệu/tháng','##GĐ3 (T7–12): DT 754 triệu | CP 620 triệu | Lãi 107 triệu/tháng ← HÒA VỐN','##GĐ4 (T13–18): DT 1,44 tỷ | CP 1,17 tỷ | Lãi 216 triệu/tháng','Vốn đầu tư ban đầu: ~74,55 triệu VNĐ','Gọi vốn Seed: 2,5–5 tỷ VNĐ (runway 18–24 tháng)']);
+  addC('3.3.1','Phương pháp hòa vốn – Multi-Product Break-Even (WACMR)',['Mô hình đa luồng doanh thu → không dùng BEP đơn giản truyền thống','Phương pháp: Weighted Average Contribution Margin Ratio (WACMR)','WACMR = (Tổng DT – Tổng Chi phí Biến đổi) / Tổng DT','BEP = Chi phí cố định / WACMR','Khi DT > BEP: mỗi đồng DT tăng thêm đóng góp WACMR đồng vào lợi nhuận','Áp dụng riêng cho từng giai đoạn vì cơ cấu nguồn thu thay đổi']);
+  addC('3.3.2','Điểm hòa vốn vận hành – Phân tích Điểm hòa vốn vận hành theo từng giai đoạn',['GĐ1: WACMR = -27,31% → BEP KHÔNG TỒN TẠI (chi phí biến đổi > doanh thu)','GĐ2: WACMR = 65,11% → BEP cần 430 triệu/tháng | DT thực: 229M → chưa đạt','GĐ3: WACMR = 84,08% → BEP = 595 triệu/tháng | DT = 754M → VƯỢT BEP ✓','GĐ4: WACMR = 82,01% → BEP = 1,11 tỷ/tháng | DT = 1,44 tỷ → Lãi ổn định','Giai đoạn 3 là thời điểm dự án chính thức bước vào chu kỳ sinh lợi']);
+  addC('3.3.3','Thời gian hoàn vốn (Payback Period)',['T0: đầu tư ban đầu -74,55 triệu','Cuối T3: lỗ lũy kế -690,9 triệu','Cuối T6: lỗ lũy kế -1.083,2 triệu (đỉnh lỗ)','Cuối T12: lỗ lũy kế thu hẹp còn -441,2 triệu (GĐ3 có lãi +107M/tháng)','Cuối T14: còn lỗ -9,7 triệu','##GIỮA THÁNG 15: DÒNG TIỀN LŨY KẾ CHẠM DƯƠNG ✓ → PAYBACK PERIOD = 15 THÁNG']);
+
+  setP('',75);await p(20);
+
+  // ══ PHẦN 4 ══════════════════════════════════════════
+  addSec('4','QUẢN TRỊ RỦI RO DỰ ÁN',['Áp dụng chuẩn PMI (PMBOK Guide, 7th ed., 2021)','5 rủi ro trọng yếu: R1–R5 xếp theo mức độ ưu tiên']);
+  addC('R1 & R2','Rủi ro dữ liệu & Bảo mật',['##R1 – Dữ liệu không đồng bộ (CAO × RẤT CAO)','68% người dùng lo "đặt chỗ rồi nhưng đến nơi bãi báo hết" – phá vỡ niềm tin','Xử lý: SLA phạt bãi xe nếu lỗi, hoàn tiền 100% người dùng; tắt bãi lỗi >5%','##R2 – Bảo mật thanh toán & dữ liệu (TRUNG BÌNH × RẤT CAO)','70% người dùng lo ngại bảo mật thanh toán; Nghị định 13/2023 yêu cầu tuân thủ','Xử lý: Pentest trước ra mắt | TLS 1.3 | Tokenization | Cyber insurance']);
+  addC('R3, R4 & R5','Rủi ro Adoption, Đối tác & Vốn',['##R3 – Adoption thấp (CAO × CAO)','Thói quen truyền thống là đối thủ lớn nhất','Xử lý: Miễn phí 100% phí DV 30 ngày đầu | Referral: giới thiệu 1 bạn = 2 lượt đặt miễn phí','##R4 – Chủ bãi rút hợp đồng (TRUNG BÌNH × CAO)','Xử lý: Hợp đồng 12 tháng có điều khoản phạt | Dashboard độc quyền | ≤15% DT/bãi','##R5 – Cạn vốn (TRUNG BÌNH × RẤT CAO)','Xử lý: Gọi vốn Seed trước T3 | Theo dõi runway hàng tuần | Kế hoạch cắt giảm khẩn']);
+
+  // ══ PHẦN 5 ══════════════════════════════════════════
+  addSec('5','ĐÁNH GIÁ HIỆU QUẢ DỰ ÁN',['Balanced Scorecard (Kaplan & Norton, 1996)','4 chiều đánh giá: Tài chính – Khách hàng – Quy trình – Học hỏi','Tất cả KPI xây dựng theo tiêu chí SMART (Doran, 1981)']);
+  addC('PHẦN 5','Đánh giá hiệu quả dự án – Balanced Scorecard',['##Tài chính: DT ≥220 triệu/tháng (T6), burn rate ≤360 triệu/tháng','##Khách hàng: ≥5.500 users (T6), NPS ≥30 điểm, tỷ lệ đặt thành công ≥92%','##Quy trình nội bộ: ≥30 bãi xe liên kết (T6), MTTR ≤4 giờ/lỗi','##Học hỏi & Phát triển: tỷ lệ giữ chân nhân sự ≥85%, app rating ≥4,2/5','Review KPI: hàng tuần (vận hành) + hàng tháng (tài chính) + hàng quý (chiến lược)']);
+
+  setP('',88);await p(20);
+
+  // ══ PHẦN 6 ══════════════════════════════════════════
+  addSec('6','DỰ ÁN TRONG GIAI ĐOẠN KẾ TIẾP',['6.1 – Lộ trình phát triển chiến lược (Strategic Roadmap)','6.2 – Tầm nhìn dài hạn và đề xuất chiến lược']);
+  addC('6.1.1','Giai đoạn 1 (Tháng 1–6): Xây dựng nền tảng và kiểm chứng thị trường',['Mục tiêu cốt lõi: đạt Product-Market Fit (PMF)','T2–3: Ra mắt MVP trên cả iOS & Android','T3–4: Ký kết 20–30 bãi xe đối tác tại Q1 và Q3','T5–6: Đạt 1.000 users đăng ký, 300–500 lượt giao dịch/ngày','Hoàn thành vòng gọi vốn Angel/Seed: 2,5–5 tỷ VNĐ (runway 18–24 tháng)','Chiến lược: tập trung early adopters – nhân viên văn phòng Q1–Q3 lái ô tô']);
+  addC('6.1.2','Giai đoạn 2 (Tháng 7–18): Tăng trưởng và mở rộng địa bàn',['T7–9: Mở rộng sang Q5, Q10','T10–12: Đạt 80–100 bãi xe, 1.500 lượt giao dịch/ngày','Ra mắt Dynamic Pricing theo giờ cao/thấp điểm và hệ thống tích điểm nâng cao','Triển khai thí điểm cảm biến IoT tại 10–20 bãi lưu lượng cao (15–40 triệu/bãi 50 chỗ)','Vòng lặp tăng trưởng: user hài lòng → giới thiệu → network effect → thêm bãi','Mục tiêu: đạt điểm hòa vốn vào cuối giai đoạn']);
+  addC('6.1.3','Giai đoạn 3 (Sau tháng 18): Mở rộng địa lý và gọi vốn Series A',['Mở rộng ra Hà Nội và Đà Nẵng – hai thị trường đô thị lớn tiếp theo','Thị trường Smart Parking toàn cầu: 8,4 tỷ USD (2023) → 28,7 tỷ USD (2030), CAGR 19,2%','Đông Nam Á: khu vực tăng trưởng nhanh nhất CAGR 23–25%','Gọi vốn Series A: mục tiêu 1–3 triệu USD','Sử dụng vốn: mở rộng đội ngũ, hạ tầng IoT toàn diện, AI dự báo nhu cầu','Tích hợp với gọi xe, bản đồ số, hệ thống quản lý tòa nhà thông minh']);
+  addC('6.2','Tầm nhìn dài hạn và đề xuất chiến lược',['Tầm nhìn 5 năm: trở thành nền tảng quản lý di chuyển đô thị (MaaS) toàn diện tại Việt Nam','Mở rộng: đặt xe điện, tích hợp giao thông công cộng, logistics đô thị','##3 trụ cột chiến lược:','Data Moat: càng nhiều giao dịch → dữ liệu càng có giá trị, lợi thế cạnh tranh bền vững','Network Expansion: mỗi bãi/user mới tăng giá trị cho toàn mạng lưới','Brand Building: niềm tin qua từng trải nghiệm người dùng tốt']);
+
+  // ── FINALE ──────────────────────────────────────────
+  {let s=pptx.addSlide();
+  s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:H,fill:{color:C.bd}});
+  s.addShape(pptx.ShapeType.rect,{x:0,y:0,w:W,h:H,fill:{color:C.bm},transparency:85});
+  s.addShape(pptx.ShapeType.rect,{x:0,y:H-0.12,w:W,h:0.12,fill:{color:C.bl}});
+  s.addText('🅿',{x:5.4,y:0.5,w:2.5,h:2.2,fontSize:90,align:'center',color:C.w});
+  s.addText('CONNECT. PARK. SMARTER.',{x:0.5,y:2.6,w:12.3,h:1,fontSize:30,bold:true,color:C.w,align:'center',fontFace:'Arial',charSpacing:3});
+  s.addText('Hòa vốn tháng 7–12  •  Hoàn vốn tháng 15  •  Series A sau tháng 18',{x:0.5,y:3.65,w:12.3,h:0.6,fontSize:15,color:'B3CCFF',align:'center',fontFace:'Arial'});
+  s.addShape(pptx.ShapeType.rect,{x:2.5,y:4.45,w:8.3,h:0.04,fill:{color:'1E3A8A'}});
+  s.addText('Xin trân trọng cảm ơn Ts. Đinh Thị Thu Oanh và Quý Thầy Cô!',{x:0.5,y:4.65,w:12.3,h:0.5,fontSize:15,color:'94A3B8',align:'center',fontFace:'Arial'});
+  s.addText('Nhóm 2  •  Lớp IB0003  •  Khóa 49  •  Đại học Kinh tế TP.HCM  •  06/06/2026',{x:0.5,y:5.2,w:12.3,h:0.45,fontSize:13,color:'64748B',align:'center',fontFace:'Arial'});}
+
+  setP('',96);await p(30);
+
+  await pptx.writeFile({fileName:'ParkConnect_Nhom2_IB0003.pptx'});
+
+  btn.disabled=false;
+  btn.textContent='✓ Tải xuống thành công!';
+  btn.style.background='linear-gradient(135deg,#10B981,#059669)';
+  prog.textContent='File "ParkConnect_Nhom2_IB0003.pptx" đã được tải về máy bạn!';
+  bar.style.width='100%';
+  bar.style.background='#10B981';
+}
+function p(ms){return new Promise(r=>setTimeout(r,ms));}
+</script>
+</body></html>
