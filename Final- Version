@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>ParkConnect</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#1A56DB;--blue2:#1445B8;--blue3:#0F3490;--blue4:#4D82FF;
+  --blue-lt:#EEF4FF;--blue-b:#B3CCFF;--blue-ln:#D9E5FF;--sky:#0EA5E9;
+  --green:#10B981;--gl:#D1FAE5;--gd:#065F46;
+  --amber:#F59E0B;--aml:#FEF3C7;--amd:#92400E;
+  --red:#EF4444;--rl:#FEE2E2;--rd:#991B1B;
+  --pu:#8B5CF6;--pul:#EDE9FE;--pud:#5B21B6;
+  --gold:#F59E0B;--gold-lt:#FEF3C7;
+  --g0:#F8FAFC;--g1:#F1F5F9;--g2:#E2E8F0;--g3:#CBD5E1;
+  --g4:#94A3B8;--g5:#64748B;--g6:#475569;--g7:#334155;
+  --g8:#1E293B;--g9:#0F172A;--wh:#fff;
+  --F:'Plus Jakarta Sans',sans-serif;
+  --r1:8px;--r2:12px;--r3:16px;--r4:20px;
+  --s1:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --s2:0 4px 16px rgba(0,0,0,.08);--s3:0 12px 32px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:var(--F);background:var(--g0);color:var(--g8);font-size:15px;line-height:1.5;max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.screen{display:none;flex-direction:column;min-height:100dvh}.screen.on{display:flex}
+.sb{height:44px;background:var(--wh);display:flex;align-items:center;justify-content:space-between;padding:8px 20px 0;flex-shrink:0;position:sticky;top:0;z-index:100}
+.sb.dk{background:var(--blue3)}.sb.tr{background:transparent;position:absolute;width:100%;z-index:10}
+.sb-t{font-size:15px;font-weight:700;color:var(--g9)}.sb.dk .sb-t,.sb.tr .sb-t{color:#fff}
+.sb-i{font-size:12px;color:var(--g5);display:flex;gap:6px}.sb.dk .sb-i,.sb.tr .sb-i{color:rgba(255,255,255,.8)}
+.tb{background:var(--wh);padding:12px 20px 14px;border-bottom:1px solid var(--g1);flex-shrink:0;position:sticky;top:44px;z-index:99}
+.tb-r{display:flex;align-items:center;gap:12px}
+.tb-t{font-size:18px;font-weight:800;color:var(--g9);flex:1}.tb-s{font-size:13px;color:var(--g5);margin-top:2px}
+.ib,.bk{width:40px;height:40px;border-radius:var(--r2);background:var(--g1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--g7);flex-shrink:0}
+.ib:active,.bk:active{background:var(--g2)}
+.sc{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:90px}.sc::-webkit-scrollbar{display:none}
+.bn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--wh);border-top:1px solid var(--g2);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.06)}
+.bt{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:2px 0;cursor:pointer;border:none;background:transparent}
+.bt-i{font-size:22px;line-height:1}.bt-l{font-size:10px;font-weight:600;color:var(--g4)}.bt.on .bt-l{color:var(--blue)}
+.bt-d{width:4px;height:4px;border-radius:50%;background:transparent;margin-top:1px}.bt.on .bt-d{background:var(--blue)}
+.cw{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:398px;z-index:150}
+.cta{width:100%;padding:16px;border-radius:var(--r3);border:none;background:var(--blue);color:#fff;font-family:var(--F);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 24px rgba(26,86,219,.35)}
+.cta:active{transform:scale(.98)}.cta.gr{background:var(--green);box-shadow:0 8px 24px rgba(16,185,129,.3)}
+.sl{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4);margin-bottom:14px}
+.sdiv{height:8px;background:var(--g1);margin:20px -20px}.secb{padding:16px 20px 0}
+.tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px}
+.t-g{background:var(--gl);color:var(--gd)}.t-a{background:var(--aml);color:var(--amd)}
+.t-r{background:var(--rl);color:var(--rd)}.t-b{background:var(--blue-lt);color:var(--blue2)}.t-s{background:var(--g1);color:var(--g6)}
+.pill{display:flex;align-items:center;gap:5px;background:var(--g1);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:600;color:var(--g7)}
+.pill.ac{background:var(--blue-lt);color:var(--blue2)}.pill.gn{background:var(--gl);color:var(--gd)}
+/* WELCOME */
+.w-hero{background:linear-gradient(160deg,var(--blue3),var(--blue) 55%,var(--sky));padding:60px 28px 40px;display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;position:relative;overflow:hidden}
+.w-logo{width:72px;height:72px;border-radius:20px;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px;animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+.w-title{font-size:32px;font-weight:800;color:#fff;margin-bottom:10px}
+.w-sub{font-size:15px;color:rgba(255,255,255,.8);line-height:1.6}
+.role-wrap{padding:0 20px 20px;background:var(--wh);display:flex;flex-direction:column;gap:12px}
+.role-lbl{padding:20px 0 8px;font-size:14px;font-weight:600;color:var(--g5);text-align:center}
+.rc{display:flex;align-items:center;gap:16px;padding:18px 16px;background:var(--wh);border:2px solid var(--g2);border-radius:var(--r4);cursor:pointer;transition:all .2s}
+.rc:active{transform:scale(.98)}
+.rc.u:active,.rc.u:hover{border-color:var(--blue);background:var(--blue-lt)}
+.rc.o:active,.rc.o:hover{border-color:var(--green);background:var(--gl)}
+.rc-ico{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.rc-ico.bl{background:var(--blue-lt)}.rc-ico.gn{background:var(--gl)}
+.rc-ttl{font-size:16px;font-weight:800;color:var(--g9);margin-bottom:3px}
+.rc-desc{font-size:13px;color:var(--g5);line-height:1.4}
+.rc-arr{font-size:20px;color:var(--g4)}
+.w-foot{padding:16px 20px;text-align:center;font-size:12px;color:var(--g4);background:var(--wh)}
+/* LOGIN */
+.lh{background:linear-gradient(150deg,var(--blue3),var(--blue));padding:48px 24px 32px;text-align:center;flex-shrink:0}
+.lh-ico{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px}
+.lh-t{font-size:24px;font-weight:800;color:#fff;margin-bottom:6px}.lh-s{font-size:14px;color:rgba(255,255,255,.8)}
+.lbody{flex:1;padding:24px 20px;background:var(--wh)}
+.ll{font-size:13px;font-weight:700;color:var(--g7);margin-bottom:8px;display:block}
+.li{width:100%;background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--r2);padding:13px 16px;font-family:var(--F);font-size:16px;color:var(--g9);outline:none;margin-bottom:14px}
+.li:focus{border-color:var(--blue4);background:var(--wh)}.li::placeholder{color:var(--g4)}
+.l-phone{display:flex;gap:8px;margin-bottom:14px}
+.l-flag{background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--r2);padding:13px 12px;font-size:14px;font-weight:600;color:var(--g7);white-space:nowrap;flex-shrink:0}
+.otp-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.otp-b{background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--r2);padding:14px 4px;text-align:center;font-size:22px;font-weight:800;color:var(--g9);outline:none;font-family:var(--F)}
+.otp-b:focus{border-color:var(--blue);background:var(--wh)}
+.l-btn{width:100%;padding:15px;border-radius:var(--r2);border:none;background:var(--blue);color:#fff;font-family:var(--F);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(26,86,219,.3);margin-bottom:12px}
+.l-btn:active{transform:scale(.98)}.l-btn.gr{background:var(--green)}
+.l-or{text-align:center;font-size:13px;color:var(--g4);margin:4px 0 12px;position:relative}
+.l-or::before,.l-or::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:var(--g2)}
+.l-or::before{left:0}.l-or::after{right:0}
+.l-alt{width:100%;padding:13px;border-radius:var(--r2);border:1.5px solid var(--g2);background:var(--wh);font-family:var(--F);font-size:15px;font-weight:600;color:var(--g7);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.l-back{width:100%;padding:13px;border-radius:var(--r2);border:1.5px solid var(--g2);background:transparent;color:var(--g6);font-family:var(--F);font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
+/* HOME */
+.hero{background:linear-gradient(160deg,var(--blue3),var(--blue) 60%,var(--sky));padding:20px 20px 28px}
+.hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-b{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo-n{font-size:18px;font-weight:800;color:#fff}.logo-n em{font-style:normal;color:rgba(255,255,255,.7)}
+.notif{width:40px;height:40px;border-radius:var(--r2);background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;position:relative}
+.n-dot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+.hero-hi{font-size:13px;color:rgba(255,255,255,.75);margin-bottom:3px}
+.hero-nm{font-size:20px;font-weight:800;color:#fff;margin-bottom:16px}.hero-nm em{font-style:normal;color:#0FF5A0}
+.sbar2{background:#fff;border-radius:var(--r3);display:flex;align-items:center;gap:10px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.sbar2 input{flex:1;border:none;outline:none;font-family:var(--F);font-size:15px;color:var(--g8);background:transparent}.sbar2 input::placeholder{color:var(--g4)}
+.sg{width:36px;height:36px;border-radius:var(--r1);background:var(--blue);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 20px}
+.qa{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.qa-i{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.qa-l{font-size:11px;font-weight:600;color:var(--g6);text-align:center;line-height:1.3}
+.vsc{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px}.vsc::-webkit-scrollbar{display:none}
+.vi{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex-shrink:0;padding:4px;border-radius:var(--r4);min-width:72px}
+.vi-b{width:64px;height:64px;border-radius:18px;background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:28px;border:2.5px solid transparent}
+.vi-n{font-size:12px;font-weight:600;color:var(--g5)}
+.vi.sel .vi-b{background:var(--blue-lt);border-color:var(--blue4);box-shadow:0 0 0 4px rgba(26,86,219,.1)}.vi.sel .vi-n{color:var(--blue)}
+.csc{display:flex;gap:8px;overflow-x:auto;padding:0 20px 4px;margin:14px -20px 0}.csc::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:7px 14px;border-radius:100px;border:1.5px solid var(--g2);color:var(--g6);font-size:13px;font-weight:600;cursor:pointer;background:#fff;white-space:nowrap}
+.chip:active{background:var(--g1)}.chip.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-radius:var(--r3);margin:16px 20px 0;box-shadow:var(--s1);border:1px solid var(--g2);overflow:hidden}
+.sb2{padding:12px 8px;text-align:center;border-right:1px solid var(--g1)}.sb2:last-child{border-right:none}
+.sn{font-size:16px;font-weight:800;color:var(--blue)}.sl2{font-size:10px;font-weight:600;color:var(--g4);margin-top:1px;line-height:1.3}
+.lmr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 10px}
+.rcc{font-size:14px;font-weight:600;color:var(--g6)}
+.lmt{display:flex;background:var(--g1);border-radius:10px;padding:3px;gap:2px}
+.lmb{padding:6px 14px;border-radius:8px;border:none;font-family:var(--F);font-size:13px;font-weight:600;color:var(--g4);background:transparent;cursor:pointer}
+.lmb.on{background:#fff;color:var(--blue);box-shadow:var(--s1)}
+.pcards{display:flex;flex-direction:column;padding:0 16px}
+.pcard{background:#fff;border-radius:var(--r3);border:1.5px solid var(--g2);padding:14px;margin-bottom:10px;display:flex;gap:12px;cursor:pointer;box-shadow:var(--s1)}
+.pcard:active{background:var(--blue-lt);border-color:var(--blue4);transform:scale(.99)}
+.pthumb{width:72px;height:72px;border-radius:var(--r2);background:var(--blue-lt);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px}
+.pbody{flex:1;min-width:0}.pname{font-size:15px;font-weight:700;color:var(--g9);margin-bottom:2px;line-height:1.3}
+.paddr{font-size:12px;color:var(--g4);margin-bottom:8px}.ptags{display:flex;gap:5px;flex-wrap:wrap}
+.pr{text-align:right;flex-shrink:0}.pprice{font-size:16px;font-weight:800;color:var(--g9)}.pprice span{font-size:11px;font-weight:400;color:var(--g4)}
+.pstar{font-size:12px;color:var(--g5);margin-top:3px}.pstar em{font-style:normal;color:var(--amber)}
+.ob{width:64px;height:4px;background:var(--g2);border-radius:2px;margin:6px 0 2px auto;overflow:hidden}.of{height:100%;border-radius:2px}.ot{font-size:11px;color:var(--g4)}
+.mapwrap{margin:0 16px 10px;background:#fff;border:1.5px solid var(--g2);border-radius:var(--r4);height:360px;position:relative;overflow:hidden;box-shadow:var(--s1)}
+.mapbg{width:100%;height:100%;background:var(--g1);position:relative}
+.mgrid{position:absolute;inset:0;background-image:repeating-linear-gradient(var(--g2) 0 1px,transparent 1px 40px),repeating-linear-gradient(90deg,var(--g2) 0 1px,transparent 1px 50px)}
+.mrhh{position:absolute;background:#fff;border:1px solid var(--g2)}.mrvv{position:absolute;background:#fff;border:1px solid var(--g2)}
+.mblk{position:absolute;border-radius:6px;background:var(--g2)}
+.mpin{position:absolute;cursor:pointer;transform:translate(-50%,-100%)}
+.pbbl{background:#fff;border:1.5px solid var(--g3);border-radius:10px;padding:5px 10px;font-size:12px;font-weight:700;color:var(--g8);white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,.12);position:relative}
+.pbbl::after{content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--g3)}
+.pbbl.ok{border-color:var(--green);color:var(--gd);background:#F0FDF4}.pbbl.ok::after{border-top-color:var(--green)}
+.pbbl.warn{border-color:var(--amber);color:var(--amd);background:#FFFBEB}.pbbl.warn::after{border-top-color:var(--amber)}
+.myloc{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--blue);border:3px solid #fff;box-shadow:0 0 0 6px rgba(26,86,219,.15)}
+/* DETAIL */
+.gall{height:220px;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;overflow:hidden;flex-shrink:0}
+.gov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(15,23,42,.5) 100%)}
+.gcnt{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.55);color:#fff;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600}
+.gdots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.gd{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4)}.gd.on{background:#fff;width:16px;border-radius:3px}
+.dbody{padding:16px 20px}.dname{font-size:20px;font-weight:800;color:var(--g9);margin-bottom:4px;line-height:1.25}
+.daddr{font-size:13px;color:var(--g5);margin-bottom:12px}.dpills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.amen-row{display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:0 20px 4px}.amen-row::-webkit-scrollbar{display:none}
+.amen{display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--g2);border-radius:var(--r2);padding:12px 14px;min-width:68px;flex-shrink:0;box-shadow:var(--s1)}
+.ai{font-size:20px}.al{font-size:11px;font-weight:600;color:var(--g5);text-align:center;line-height:1.3}
+.zi{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.zb{font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px}
+.zb.res{background:var(--blue-lt);color:var(--blue2)}.zb.opn{background:var(--g1);color:var(--g6)}
+.sleg{display:flex;gap:12px;margin-bottom:12px}.le{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--g5)}
+.ld{width:10px;height:10px;border-radius:3px}
+.sfll{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g4);margin-bottom:8px}
+.sgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:16px}
+.slot{height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid transparent}
+.slot.free{background:var(--gl);color:var(--gd);border-color:#A7F3D0}.slot.free:active{background:#BBF7D0}
+.slot.taken{background:var(--g1);color:var(--g3);cursor:not-allowed}
+.slot.sel{background:var(--blue);color:#fff;border-color:var(--blue2);box-shadow:0 2px 8px rgba(26,86,219,.3)}
+.slot.opz{background:var(--aml);color:var(--amd);cursor:not-allowed;border-color:#FDE68A}
+.ravg{display:flex;align-items:center;gap:16px;background:var(--g0);border-radius:var(--r3);padding:16px;margin-bottom:14px;border:1px solid var(--g2)}
+.rbig{font-size:40px;font-weight:800;color:var(--g9);line-height:1}.rss{font-size:16px;color:var(--amber)}.rct{font-size:12px;color:var(--g4);margin-top:4px}
+.rbars{flex:1}.rrow{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.rs{font-size:11px;color:var(--g5);min-width:8px}.rbg{flex:1;height:5px;background:var(--g2);border-radius:3px;overflow:hidden}
+.rf{height:100%;border-radius:3px;background:var(--amber)}.rp{font-size:10px;color:var(--g4);min-width:28px;text-align:right}
+.rcard{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);padding:14px;margin-bottom:10px;box-shadow:var(--s1)}
+.rhead{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rav{width:36px;height:36px;border-radius:50%;background:var(--blue-ln);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--blue2);flex-shrink:0}
+.rnm{font-size:14px;font-weight:700;color:var(--g9)}.rdt{font-size:11px;color:var(--g4)}.rst{color:var(--amber);font-size:12px;margin-left:auto}
+.rtxt{font-size:13px;color:var(--g6);line-height:1.6}
+/* BOOKING */
+.bsum{margin:16px 20px;background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);padding:14px;display:flex;gap:12px;align-items:center;box-shadow:var(--s1)}
+.bico{width:48px;height:48px;border-radius:var(--r2);background:var(--blue-lt);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px}
+.bnm2{font-size:15px;font-weight:700;color:var(--g9)}.bsub2{font-size:12px;color:var(--g5)}
+.bbdg{margin-left:auto;background:var(--blue-lt);border:1.5px solid var(--blue-b);border-radius:var(--r1);padding:6px 10px;text-align:center;flex-shrink:0}
+.bsl{font-size:16px;font-weight:800;color:var(--blue)}.bsll{font-size:10px;color:var(--g5)}
+.fsec{padding:0 20px 16px}
+.fl{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.fl .req{color:var(--red);font-size:10px}
+.inp{width:100%;background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--r2);padding:12px 14px;font-family:var(--F);font-size:15px;color:var(--g8);outline:none}
+.inp::placeholder{color:var(--g4)}.inp:focus{border-color:var(--blue4);background:var(--wh)}
+.inp.pl{text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-size:16px}
+.dtog{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);padding:14px;margin:0 20px 16px;box-shadow:var(--s1)}
+.drow{display:flex;align-items:center;justify-content:space-between}
+.dlbl{font-size:14px;font-weight:700;color:var(--g8)}.dsub{font-size:12px;color:var(--g5);margin-top:2px}
+.tgl{position:relative;width:44px;height:26px;flex-shrink:0}.tgl input{opacity:0;width:0;height:0;position:absolute}
+.tsl{position:absolute;inset:0;background:var(--g2);border-radius:100px;cursor:pointer}
+.tsl::before{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tgl input:checked+.tsl{background:var(--blue)}.tgl input:checked+.tsl::before{transform:translateX(18px)}
+.dext{margin-top:12px;padding-top:12px;border-top:1px solid var(--g1)}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tbtn{background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--r2);padding:10px 4px;text-align:center;font-size:13px;font-weight:600;color:var(--g6);cursor:pointer;font-family:var(--F)}
+.tbtn:active{background:var(--g1)}.tbtn.on{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}.tbtn.off{color:var(--g3);cursor:not-allowed}
+.drow2{display:flex;gap:8px}
+.dbtn{flex:1;padding:10px;border-radius:var(--r2);border:1.5px solid var(--g2);background:var(--g0);font-size:13px;font-weight:700;color:var(--g6);cursor:pointer;text-align:center;font-family:var(--F)}
+.dbtn.on{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+.pbox{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);overflow:hidden;margin-bottom:12px;box-shadow:var(--s1)}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--g1);font-size:14px}
+.prow:last-child{border-bottom:none}.prow .pl{color:var(--g5)}.prow .pv{font-weight:700;color:var(--g8)}
+.prow.grand .pl{font-weight:700;color:var(--g9);font-size:15px}.prow.grand .pv{color:var(--blue);font-size:18px;font-weight:800}
+.wnote{background:var(--aml);border:1px solid #FDE68A;border-radius:var(--r2);padding:10px 14px;font-size:12px;color:var(--amd);display:flex;gap:8px;align-items:flex-start;line-height:1.5;margin-bottom:16px}
+/* PAYMENT */
+.psum{margin:16px 20px;background:var(--blue-lt);border:1.5px solid var(--blue-b);border-radius:var(--r3);padding:14px}
+.ps-t{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+.ps-r{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--blue-ln)}
+.ps-r:last-child{border-bottom:none;padding-top:8px;margin-top:4px}
+.ps-r .pl{color:var(--blue3)}.ps-r .pv{font-weight:700;color:var(--blue3)}
+.ps-r.grand .pl{font-weight:800;font-size:15px}.ps-r.grand .pv{font-size:18px;font-weight:800;color:var(--blue)}
+.pm-lbl{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4);padding:0 20px 10px;display:block}
+.pms{display:flex;flex-direction:column;gap:8px;padding:0 20px}
+.pm{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--r3);border:1.5px solid var(--g2);background:#fff;cursor:pointer;box-shadow:var(--s1)}
+.pm:active{background:var(--g0)}.pm.on{border-color:var(--blue);background:var(--blue-lt)}
+.pmlog{width:44px;height:30px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.mm{background:#AE2070;color:#fff}.zl{background:#0068FF;color:#fff}.vn{background:#007EC9;color:#fff}.cd{background:var(--g8);color:#fff}.ca{background:var(--gl);color:var(--gd)}
+.pminf{flex:1}.pmnm{font-size:15px;font-weight:700;color:var(--g9)}.pmsb{font-size:12px;color:var(--g5)}.pmbal{font-size:13px;font-weight:700;color:var(--green)}
+.rring{width:22px;height:22px;border-radius:50%;border:2px solid var(--g3);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.rring.on{border-color:var(--blue)}.rdot{width:11px;height:11px;border-radius:50%;background:var(--blue)}
+.snote{margin:12px 20px;background:var(--gl);border-radius:var(--r2);padding:10px 14px;font-size:12px;color:var(--gd);display:flex;gap:8px;align-items:center}
+/* SUCCESS */
+.succ{flex:1;display:flex;flex-direction:column;align-items:center;padding:32px 20px;background:#fff}
+.sring{width:80px;height:80px;border-radius:50%;background:var(--gl);border:3px solid #A7F3D0;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:16px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
+.stit{font-size:24px;font-weight:800;color:var(--g9);margin-bottom:6px}.ssub{font-size:14px;color:var(--g5);margin-bottom:24px;text-align:center}
+.qrc{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r4);padding:20px;margin-bottom:16px;display:flex;flex-direction:column;align-items:center;box-shadow:var(--s2);width:100%}
+.qrcode{width:140px;height:140px;background:repeating-conic-gradient(var(--g9) 0% 25%,#fff 0% 50%) 0/11px 11px;border-radius:6px;margin-bottom:12px;opacity:.9}
+.qrid{font-family:monospace;font-size:15px;font-weight:700;color:var(--blue)}.qrl{font-size:12px;color:var(--g5);margin-top:4px}
+.qroff{margin-top:8px;background:var(--gl);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--gd);display:flex;align-items:center;gap:5px}
+.bkc{background:var(--g0);border:1px solid var(--g2);border-radius:var(--r3);padding:16px;width:100%;margin-bottom:16px}
+.bcr{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--g1);font-size:14px}.bcr:last-child{border-bottom:none}
+.bcr .bl{color:var(--g5)}.bcr .bv{font-weight:700;color:var(--g8)}
+.arow{display:flex;gap:10px;width:100%}
+.ab{flex:1;padding:14px;border-radius:var(--r3);border:none;font-family:var(--F);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.ab.p{background:var(--blue);color:#fff}.ab.g{background:var(--g1);color:var(--g7)}
+.exb{width:100%;margin-top:10px;padding:13px;border-radius:var(--r3);border:1.5px solid var(--blue-b);background:var(--blue-lt);color:var(--blue);font-family:var(--F);font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.eopts{display:flex;gap:8px}
+.eopt{flex:1;padding:10px;border-radius:var(--r2);border:1.5px solid var(--g2);background:var(--g0);font-size:13px;font-weight:700;color:var(--g6);cursor:pointer;text-align:center;font-family:var(--F)}
+.eopt.on{background:var(--blue-lt);border-color:var(--blue);color:var(--blue)}
+/* HISTORY */
+.hi-it{background:#fff;border-bottom:1px solid var(--g1);padding:16px 20px;cursor:pointer}.hi-it:active{background:var(--g0)}
+.ht-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.hico{width:44px;height:44px;border-radius:var(--r2);background:var(--blue-lt);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.hnm{font-size:15px;font-weight:700;color:var(--g9);flex:1}.hpr{font-size:16px;font-weight:800;color:var(--blue)}
+.hsub{font-size:12px;color:var(--g5);padding-left:56px;margin-bottom:8px}
+.hsr{padding-left:56px;display:flex;align-items:center;gap:8px}
+.stars{display:flex;gap:3px}.star{font-size:22px;cursor:pointer;color:var(--g2)}.star.on{color:var(--amber)}
+.wrev{margin-left:auto;background:transparent;border:1.5px solid var(--g2);border-radius:100px;padding:5px 12px;font-size:12px;font-weight:600;color:var(--g5);cursor:pointer;font-family:var(--F)}
+.sov{position:fixed;inset:0;z-index:300;background:rgba(15,23,42,.5);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center}
+.sov.open{display:flex}
+.rsh{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:430px;padding:0 20px max(24px,env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(0,0,0,.15);animation:up .32s cubic-bezier(.32,1,.2,1)}
+.shdl{width:36px;height:4px;background:var(--g2);border-radius:2px;margin:14px auto 20px}
+.shtit{font-size:20px;font-weight:800;color:var(--g9);margin-bottom:4px}.shsub{font-size:13px;color:var(--g5);margin-bottom:20px}
+.bstars{display:flex;justify-content:center;gap:8px;margin-bottom:20px}.bstar{font-size:40px;cursor:pointer;color:var(--g2)}.bstar.on{color:var(--amber)}
+.rtags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.rtag{padding:8px 14px;border-radius:100px;border:1.5px solid var(--g2);font-size:13px;font-weight:600;color:var(--g6);cursor:pointer;background:#fff}.rtag.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.rta{width:100%;background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--r3);padding:12px 14px;font-family:var(--F);font-size:14px;resize:none;height:80px;outline:none;color:var(--g8);margin-bottom:14px}
+.rta::placeholder{color:var(--g4)}.rta:focus{border-color:var(--blue4)}
+.rsub{width:100%;padding:16px;border-radius:var(--r3);border:none;background:var(--blue);color:#fff;font-family:var(--F);font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px}
+.rskp{width:100%;padding:14px;border-radius:var(--r3);border:none;background:var(--g1);color:var(--g6);font-family:var(--F);font-size:15px;font-weight:600;cursor:pointer}
+/* ACCOUNT */
+.acc-hero{background:linear-gradient(135deg,var(--blue3),var(--blue));padding:28px 20px 24px}
+.acc-av{width:64px;height:64px;border-radius:50%;border:3px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:12px;background:rgba(255,255,255,.15)}
+.acc-nm{font-size:20px;font-weight:800;color:#fff;margin-bottom:2px}.acc-ph{font-size:13px;color:rgba(255,255,255,.75)}
+.acc-plan{margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:100px;padding:6px 14px;font-size:13px;font-weight:700;color:#fff}
+.acc-sec{padding:14px 20px 6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4)}
+.acc-menu{background:#fff}
+.acc-item{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--g1);cursor:pointer}
+.acc-item:active{background:var(--g0)}.acc-item:last-child{border-bottom:none}
+.acc-ico{width:40px;height:40px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.acc-lbl{font-size:15px;font-weight:600;color:var(--g8);flex:1}.acc-sub{font-size:12px;color:var(--g5);margin-top:1px}.acc-arr{font-size:16px;color:var(--g4)}
+.up-ban{margin:14px 20px;border-radius:var(--r3);padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px}
+/* PACKAGES USER */
+.pkg-tog{display:flex;background:rgba(255,255,255,.15);border-radius:100px;padding:3px;margin:16px auto 0;width:fit-content;gap:2px}
+.ptab{padding:7px 20px;border-radius:100px;font-size:13px;font-weight:700;color:rgba(255,255,255,.7);cursor:pointer;border:none;background:transparent;font-family:var(--F)}
+.ptab.on{background:#fff;color:var(--blue2)}
+.pkgs{padding:16px 16px 0}
+.pkg-card{background:#fff;border:2px solid var(--g2);border-radius:var(--r4);padding:20px;margin-bottom:12px;position:relative;overflow:hidden}
+.pkg-card.feat{border-color:var(--pu);box-shadow:0 0 0 4px rgba(139,92,246,.1)}
+.pkg-card.gld-c{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,158,11,.1)}
+.pkg-best{position:absolute;top:14px;right:14px;font-size:10px;font-weight:800;padding:4px 10px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase}
+.pkg-best.pu{background:var(--pu);color:#fff}.pkg-best.gd{background:linear-gradient(135deg,var(--gold),#F97316);color:#fff}
+.pkg-ico{font-size:32px;margin-bottom:10px}.pkg-nm{font-size:20px;font-weight:800;color:var(--g9);margin-bottom:4px}
+.pkg-dc{font-size:13px;color:var(--g5);margin-bottom:14px;line-height:1.5}
+.pkg-pr{font-size:28px;font-weight:800;margin-bottom:4px}.pkg-pr span{font-size:13px;font-weight:400;color:var(--g5)}
+.pkg-pr.fr{color:var(--g6)}.pkg-pr.pu2{color:var(--pu)}.pkg-pr.gd2{color:var(--gold)}
+.pkg-sv{font-size:12px;font-weight:700;color:var(--green);margin-bottom:14px}
+.pkg-ft{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+.pkg-ft li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--g7);line-height:1.4}
+.pkg-ft li::before{content:'✓';color:var(--green);font-weight:800;flex-shrink:0;margin-top:1px}
+.pkg-ft li.no::before{content:'✗';color:var(--g3)}.pkg-ft li.no{color:var(--g4)}
+.pkg-btn{width:100%;padding:14px;border-radius:var(--r2);border:none;font-family:var(--F);font-size:15px;font-weight:700;cursor:pointer}
+.pkg-btn.pb{background:var(--blue);color:#fff}.pkg-btn.ppu{background:var(--pu);color:#fff;box-shadow:0 6px 20px rgba(139,92,246,.3)}
+.pkg-btn.pgd{background:linear-gradient(135deg,var(--gold),#F97316);color:#fff;box-shadow:0 6px 20px rgba(245,158,11,.3)}
+.pkg-btn.pgh{background:var(--g1);color:var(--g6)}
+.pcmp{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);margin:0 16px 16px;overflow:hidden;box-shadow:var(--s1)}
+.pcr{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid var(--g1)}.pcr:last-child{border-bottom:none}
+.pcc{padding:10px 8px;font-size:12px;text-align:center;border-right:1px solid var(--g1)}.pcc:last-child{border-right:none}
+.pcr.phdr .pcc{font-weight:700;background:var(--g0);color:var(--g6)}.pcr.phdr .pcc.hl{background:var(--pul);color:var(--pud)}.pcr.phdr .pcc.hl2{background:var(--gold-lt);color:var(--amd)}
+.pcck{color:var(--green);font-weight:800}.pccx{color:var(--g3)}.pcct{color:var(--g7);font-weight:600}
+/* OP PACKAGES */
+.op-stages{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.sp{padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;border:1.5px solid rgba(255,255,255,.3);color:rgba(255,255,255,.7);cursor:pointer}
+.sp.on{background:#fff;color:var(--blue2);border-color:#fff}
+.op-pc{background:#fff;border:2px solid var(--g2);border-radius:var(--r4);padding:20px;margin-bottom:12px;position:relative}
+.op-pc.ac{border-color:var(--green);box-shadow:0 0 0 4px rgba(16,185,129,.1)}
+.op-pc.vp{border-color:var(--blue);box-shadow:0 0 0 4px rgba(26,86,219,.1)}
+.op-pc.vvp{border-color:var(--pu);box-shadow:0 0 0 4px rgba(139,92,246,.1)}
+.op-stg{position:absolute;top:14px;right:14px;font-size:10px;font-weight:800;padding:4px 10px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase}
+.op-ico{font-size:32px;margin-bottom:10px}.op-nm{font-size:20px;font-weight:800;color:var(--g9);margin-bottom:4px}
+.op-dc{font-size:13px;color:var(--g5);margin-bottom:14px;line-height:1.5}
+.op-pr .mn{font-size:28px;font-weight:800;line-height:1.1}.op-pr .sb3{font-size:12px;color:var(--g5);margin-top:3px}
+.op-ft{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+.op-ft li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--g7);line-height:1.4}
+.op-ft li::before{content:'✓';color:var(--green);font-weight:800;flex-shrink:0;margin-top:1px}
+.op-btn{width:100%;padding:14px;border-radius:var(--r2);border:none;font-family:var(--F);font-size:15px;font-weight:700;cursor:pointer}
+.op-btn.oa{background:var(--green);color:#fff}.op-btn.on2{background:var(--blue);color:#fff}.op-btn.og{background:var(--g1);color:var(--g6)}
+.rtbl{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);margin:0 16px 16px;overflow:hidden;box-shadow:var(--s1)}
+.rtr{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;border-bottom:1px solid var(--g1)}.rtr:last-child{border-bottom:none}
+.rtc{padding:10px 10px;font-size:12px;color:var(--g7);border-right:1px solid var(--g1)}.rtc:last-child{border-right:none}
+.rtr.rhdr .rtc{font-weight:700;background:var(--blue);color:#fff;font-size:11px}
+.rtc.hl{color:var(--blue);font-weight:700}.rtc.gn{color:var(--green);font-weight:700}.rtc.am{color:var(--amber);font-weight:700}
+/* OP ACCOUNT */
+.op-ac-hero{background:linear-gradient(135deg,var(--blue3),var(--blue));padding:24px 20px}
+.op-ac-top{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.op-ac-av{width:60px;height:60px;border-radius:16px;border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:28px;background:rgba(255,255,255,.15);flex-shrink:0}
+.op-ac-nm{font-size:18px;font-weight:800;color:#fff}.op-ac-bz{font-size:13px;color:rgba(255,255,255,.75)}
+.op-stats{display:grid;grid-template-columns:repeat(3,1fr);background:rgba(255,255,255,.1);border-radius:var(--r2);overflow:hidden}
+.op-st{padding:12px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.15)}.op-st:last-child{border-right:none}
+.op-sn{font-size:18px;font-weight:800;color:#fff}.op-sl{font-size:10px;color:rgba(255,255,255,.75);margin-top:2px}
+/* DASHBOARD */
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 20px}
+.kc{background:#fff;border-radius:var(--r3);border:1.5px solid var(--g2);padding:14px;box-shadow:var(--s1)}
+.kl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--g4);margin-bottom:8px}
+.kv{font-size:28px;font-weight:800;line-height:1;margin-bottom:5px}.kch{font-size:12px;display:flex;align-items:center;gap:4px}
+.kup{color:var(--green)}.kdn{color:var(--red)}
+.zctrl{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);margin:0 20px 14px;padding:16px;box-shadow:var(--s1)}
+.zct{font-size:13px;font-weight:700;color:var(--g8);margin-bottom:4px}.zcs{font-size:12px;color:var(--g5);margin-bottom:14px}
+.zdisp{display:flex;height:36px;border-radius:var(--r2);overflow:hidden;margin-bottom:10px}
+.zres{display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-size:12px;font-weight:700;transition:width .3s}
+.zopn{display:flex;align-items:center;justify-content:center;background:var(--g3);color:var(--g7);font-size:12px;font-weight:700;transition:width .3s}
+.zsli{width:100%;accent-color:var(--blue);margin-bottom:8px;cursor:pointer}
+.zlbl{display:flex;justify-content:space-between;font-size:11px;color:var(--g5);font-weight:600}
+.ztcs{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px}.ztcs::-webkit-scrollbar{display:none}
+.ztc{flex-shrink:0;padding:5px 12px;border-radius:100px;border:1.5px solid var(--g2);font-size:12px;font-weight:600;color:var(--g5);cursor:pointer;background:#fff}.ztc.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.scs{display:flex;flex-direction:column;gap:10px;padding:0 20px 4px}
+.scrd{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);padding:16px;box-shadow:var(--s1)}
+.styr{display:flex;align-items:center;gap:7px;margin-bottom:14px}.sdot{width:10px;height:10px;border-radius:50%}
+.stnm{font-size:13px;font-weight:700;color:var(--g6);letter-spacing:.06em;text-transform:uppercase}
+.scnt{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.cb{width:44px;height:44px;border-radius:var(--r2);border:none;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--F)}
+.cm{background:var(--rl);color:var(--red)}.cm:active{background:#FECACA}.cp{background:var(--gl);color:var(--green)}.cp:active{background:#BBF7D0}
+.cn{font-size:32px;font-weight:800;color:var(--g9);min-width:48px;text-align:center}.sc-cap{font-size:12px;color:var(--g4)}
+.otr{background:var(--g1);border-radius:4px;height:6px;overflow:hidden;margin-top:8px}.otf{height:100%;border-radius:4px;transition:width .4s}
+.cpanel{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);margin:0 20px;padding:16px;box-shadow:var(--s1)}
+.clbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4);margin-bottom:14px}
+.bchart{display:flex;align-items:flex-end;gap:4px;height:100px;padding-bottom:18px;position:relative}
+.bchart::after{content:'';position:absolute;bottom:18px;left:0;right:0;border-bottom:1px dashed var(--g2)}
+.bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end}
+.bbar{width:100%;border-radius:4px 4px 0 0;background:var(--blue-b);cursor:pointer;min-height:2px}.bbar:active{background:var(--blue4)}.bbar.pk{background:var(--blue)}
+.blt{font-size:9px;color:var(--g4)}
+.drow3{display:flex;align-items:center;justify-content:center;gap:20px;height:100px}
+.dleg{display:flex;flex-direction:column;gap:8px}.dli{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--g6)}
+.dd{width:10px;height:10px;border-radius:50%}.dv{margin-left:auto;font-weight:700;color:var(--g8)}
+.rpanel{background:#fff;border:1.5px solid var(--g2);border-radius:var(--r3);padding:16px;margin:10px 20px 0;box-shadow:var(--s1)}
+.rhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.rtl2{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4)}
+.pk-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px}.pk-row:last-child{margin-bottom:0}
+.pkt{font-weight:700;color:var(--g8);min-width:100px}.pkb{flex:1;height:6px;background:var(--g1);border-radius:3px;overflow:hidden}
+.pkf{height:100%;border-radius:3px}.pkp{font-size:12px;color:var(--g4);min-width:32px;text-align:right}
+.mrow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--g1);font-size:14px}.mrow:last-child{border-bottom:none}
+.mrow .ml{color:var(--g5)}.mrow .mv{font-weight:700;color:var(--g9)}
+.ins{margin:10px 20px;background:var(--blue-lt);border:1.5px solid var(--blue-b);border-radius:var(--r3);padding:14px;display:flex;gap:10px}
+.ins p{font-size:13px;color:var(--blue3);line-height:1.6}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--g9);color:#fff;border-radius:var(--r2);padding:12px 18px;font-size:14px;font-weight:500;white-space:nowrap;opacity:0;transition:all .32s cubic-bezier(.16,1,.3,1);pointer-events:none;z-index:999;box-shadow:var(--s3)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+@media(min-width:500px){body{box-shadow:0 0 0 1px var(--g2),0 20px 60px rgba(0,0,0,.15)}}
+</style>
+</head>
+<body>
+<!-- ══ WELCOME ══ -->
+<div class="screen on" id="s0">
+  <div class="sb tr"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="w-hero"><div class="w-logo">🅿</div><div class="w-title">ParkConnect</div><div class="w-sub">Nền tảng đỗ xe thông minh<br>Kết nối bãi xe &amp; người lái</div></div>
+  <div class="role-wrap">
+    <div class="role-lbl">Bạn là ai?</div>
+    <div class="rc u" onclick="setRole('user')"><div class="rc-ico bl">🧑‍💼</div><div style="flex:1"><div class="rc-ttl">Người dùng</div><div class="rc-desc">Tìm &amp; đặt chỗ đỗ xe nhanh, thanh toán không tiền mặt</div></div><div class="rc-arr">→</div></div>
+    <div class="rc o" onclick="setRole('op')"><div class="rc-ico gn">🏢</div><div style="flex:1"><div class="rc-ttl">Chủ bãi xe</div><div class="rc-desc">Quản lý bãi xe, tăng occupancy, mở rộng kênh khách hàng</div></div><div class="rc-arr">→</div></div>
+  </div>
+  <div class="w-foot">Bằng cách tiếp tục, bạn đồng ý với <span style="color:var(--blue);font-weight:600">Điều khoản</span> &amp; <span style="color:var(--blue);font-weight:600">Bảo mật</span></div>
+</div>
+<!-- ══ LOGIN USER ══ -->
+<div class="screen" id="s1u">
+  <div class="sb dk"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="lh"><div class="lh-ico">🧑‍💼</div><div class="lh-t">Đăng nhập</div><div class="lh-s">Người dùng ParkConnect</div></div>
+  <div class="lbody">
+    <label class="ll">Số điện thoại</label>
+    <div class="l-phone"><div class="l-flag">🇻🇳 +84</div><input type="tel" class="li" placeholder="Nhập số điện thoại" style="margin:0;flex:1"></div>
+    <button class="l-btn" onclick="G('s1uotp')">Gửi mã OTP</button>
+    <div class="l-or">hoặc</div>
+    <button class="l-alt" onclick="T('🔵 Đăng nhập bằng Facebook')">🔵 Tiếp tục với Facebook</button>
+    <button class="l-alt" style="margin-top:8px" onclick="T('🔍 Đăng nhập bằng Google')">🔍 Tiếp tục với Google</button>
+    <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--g5)">Chưa có tài khoản? <span style="color:var(--blue);font-weight:700;cursor:pointer">Đăng ký ngay</span></div>
+    <button class="l-back" onclick="G('s0')">← Quay lại chọn vai trò</button>
+  </div>
+</div>
+<!-- ══ OTP ══ -->
+<div class="screen" id="s1uotp">
+  <div class="sb dk"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="lh"><div class="lh-ico">🔑</div><div class="lh-t">Nhập mã OTP</div><div class="lh-s">Đã gửi đến 0912 *** 345</div></div>
+  <div class="lbody">
+    <div class="otp-row"><input type="tel" class="otp-b" maxlength="1"><input type="tel" class="otp-b" maxlength="1"><input type="tel" class="otp-b" maxlength="1"><input type="tel" class="otp-b" maxlength="1"></div>
+    <button class="l-btn" onclick="G('s2')">Xác nhận &amp; Đăng nhập</button>
+    <div style="text-align:center;font-size:13px;color:var(--g4);margin-top:10px">Không nhận được? <span style="color:var(--blue);font-weight:600;cursor:pointer">Gửi lại</span></div>
+  </div>
+</div>
+<!-- ══ LOGIN OPERATOR ══ -->
+<div class="screen" id="s1o">
+  <div class="sb" style="background:var(--gd)"><span class="sb-t" style="color:#fff">9:41</span><span class="sb-i" style="color:rgba(255,255,255,.8)">📶 🔋</span></div>
+  <div class="lh" style="background:linear-gradient(150deg,var(--gd),var(--green))"><div class="lh-ico">🏢</div><div class="lh-t">Đăng nhập bãi xe</div><div class="lh-s">Quản lý &amp; vận hành bãi đỗ xe</div></div>
+  <div class="lbody">
+    <label class="ll">Email / Số điện thoại</label><input type="text" class="li" placeholder="example@email.com">
+    <label class="ll">Mật khẩu</label><input type="password" class="li" placeholder="••••••••">
+    <button class="l-btn gr" onclick="G('sop')">Đăng nhập</button>
+    <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--g5)">Chưa có tài khoản? <span style="color:var(--green);font-weight:700;cursor:pointer">Đăng ký bãi xe</span></div>
+    <button class="l-back" onclick="G('s0')">← Quay lại chọn vai trò</button>
+  </div>
+</div>
+<!-- ══ HOME USER ══ -->
+<div class="screen" id="s2">
+  <div class="sb dk"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="sc">
+    <div class="hero">
+      <div class="hero-top"><div class="logo"><div class="logo-b">🅿</div><div class="logo-n">Park<em>Connect</em></div></div><div class="notif" onclick="T('🔔 Không có thông báo mới')"><span style="font-size:18px">🔔</span><div class="n-dot"></div></div></div>
+      <div class="hero-hi">Xin chào, Minh Anh 👋</div><div class="hero-nm">Tìm bãi xe <em>ngay</em></div>
+      <div class="sbar2"><span style="font-size:18px">📍</span><input type="text" placeholder="Tìm khu vực, tòa nhà..."><button class="sg" onclick="T('🔍 Đang tìm...')">→</button></div>
+    </div>
+    <div class="qa-grid">
+      <div class="qa" onclick="T('🗺 Mở bản đồ')"><div class="qa-i" style="background:var(--blue-lt)">🗺</div><div class="qa-l">Gần tôi</div></div>
+      <div class="qa" onclick="G('shist')"><div class="qa-i" style="background:var(--gl)">📋</div><div class="qa-l">Lịch sử</div></div>
+      <div class="qa" onclick="G('spku')"><div class="qa-i" style="background:var(--pul)">⭐</div><div class="qa-l">Gói dịch vụ</div></div>
+      <div class="qa" onclick="G('sacc')"><div class="qa-i" style="background:var(--aml)">👤</div><div class="qa-l">Tài khoản</div></div>
+    </div>
+    <div style="height:1px;background:var(--g1);margin:0 20px"></div>
+    <div style="padding:16px 20px 0"><div class="sl">Loại phương tiện</div>
+      <div class="vsc"><div class="vi sel" onclick="PV(this,'Xe máy')"><div class="vi-b">🛵</div><div class="vi-n">Xe máy</div></div><div class="vi" onclick="PV(this,'Ô tô')"><div class="vi-b">🚗</div><div class="vi-n">Ô tô</div></div><div class="vi" onclick="PV(this,'SUV')"><div class="vi-b">🚙</div><div class="vi-n">SUV</div></div><div class="vi" onclick="PV(this,'Bán tải')"><div class="vi-b">🛻</div><div class="vi-n">Bán tải</div></div><div class="vi" onclick="PV(this,'Xe tải')"><div class="vi-b">🚚</div><div class="vi-n">Xe tải</div></div><div class="vi" onclick="PV(this,'Xe điện')"><div class="vi-b">⚡</div><div class="vi-n">Xe điện</div></div></div>
+    </div>
+    <div style="padding:0 20px;margin-top:14px"><div class="sl">Khu vực &amp; Tiện ích</div>
+      <div class="csc" style="margin-top:0"><div class="chip sel" onclick="TC(this)">Tất cả</div><div class="chip" onclick="TC(this)">Quận 1</div><div class="chip" onclick="TC(this)">Quận 3</div><div class="chip" onclick="TC(this)">Quận 5</div><div class="chip" onclick="TC(this)">Bình Thạnh</div><div class="chip" onclick="TC(this)">🏠 Mái che</div><div class="chip" onclick="TC(this)">📷 Camera</div><div class="chip" onclick="TC(this)">⚡ Sạc EV</div><div class="chip" onclick="TC(this)">✅ Còn chỗ</div></div>
+    </div>
+    <div class="stats"><div class="sb2"><div class="sn">2.4K+</div><div class="sl2">Bãi đối tác</div></div><div class="sb2"><div class="sn">120K</div><div class="sl2">Lượt đặt/tháng</div></div><div class="sb2"><div class="sn">98%</div><div class="sl2">Hài lòng</div></div><div class="sb2"><div class="sn">15TP</div><div class="sl2">Thành phố</div></div></div>
+    <div class="lmr"><span class="rcc">12 bãi xe phù hợp</span><div class="lmt"><button class="lmb on" id="bL" onclick="SLM('list')">≡ Danh sách</button><button class="lmb" id="bM" onclick="SLM('map')">⊞ Bản đồ</button></div></div>
+    <div id="lv" class="pcards">
+      <div class="pcard" onclick="G('s3')"><div class="pthumb">🏢</div><div class="pbody"><div class="pname">Vincom Đồng Khởi</div><div class="paddr">📍 70 Lê Thánh Tôn, Q.1 · 0.3 km</div><div class="ptags"><span class="tag t-g">● 68 chỗ</span><span class="tag t-b">🏠 Mái che</span><span class="tag t-b">24/7</span></div></div><div class="pr"><div class="pprice">5.000₫ <span>/giờ</span></div><div class="pstar"><em>★</em> 4.8 · 312</div><div class="ob"><div class="of" style="width:70%;background:var(--amber)"></div></div><div class="ot">70% đầy</div></div></div>
+      <div class="pcard" onclick="G('s3')"><div class="pthumb">🌿</div><div class="pbody"><div class="pname">Green Park – Landmark 81</div><div class="paddr">📍 Vinhomes, Bình Thạnh · 2.1 km</div><div class="ptags"><span class="tag t-g">● 341 chỗ</span><span class="tag t-b">⚡ Sạc EV</span></div></div><div class="pr"><div class="pprice">8.000₫ <span>/giờ</span></div><div class="pstar"><em>★</em> 4.9 · 856</div><div class="ob"><div class="of" style="width:43%;background:var(--green)"></div></div><div class="ot">43% đầy</div></div></div>
+      <div class="pcard" onclick="G('s3')"><div class="pthumb">🏬</div><div class="pbody"><div class="pname">Parkson Hùng Vương</div><div class="paddr">📍 Hùng Vương Plaza, Q.5 · 1.2 km</div><div class="ptags"><span class="tag t-g">● 102 chỗ</span><span class="tag t-s">7–22h</span></div></div><div class="pr"><div class="pprice">4.000₫ <span>/giờ</span></div><div class="pstar"><em>★</em> 4.5 · 201</div><div class="ob"><div class="of" style="width:32%;background:var(--green)"></div></div><div class="ot">32% đầy</div></div></div>
+      <div class="pcard" onclick="G('s3')"><div class="pthumb">🗿</div><div class="pbody"><div class="pname">Bãi xe Bến Thành</div><div class="paddr">📍 Chợ Bến Thành, Q.1 · 0.7 km</div><div class="ptags"><span class="tag t-a">⚠ Còn 4 chỗ</span><span class="tag t-s">Ngoài trời</span></div></div><div class="pr"><div class="pprice">3.000₫ <span>/giờ</span></div><div class="pstar"><em>★</em> 3.9 · 88</div><div class="ob"><div class="of" style="width:95%;background:var(--red)"></div></div><div class="ot">95% đầy</div></div></div>
+    </div>
+    <div id="mv" style="display:none;padding:0 16px"><div class="mapwrap"><div class="mapbg"><div class="mgrid"></div><div class="mrhh" style="top:38%;left:0;right:0;height:14px"></div><div class="mrhh" style="top:66%;left:0;right:0;height:10px"></div><div class="mrvv" style="left:28%;top:0;bottom:0;width:12px"></div><div class="mrvv" style="left:63%;top:0;bottom:0;width:12px"></div><div class="mblk" style="left:3%;top:5%;width:22%;height:30%"></div><div class="mblk" style="left:32%;top:5%;width:28%;height:28%"></div><div class="mblk" style="left:67%;top:5%;width:28%;height:30%"></div><div class="mblk" style="left:3%;top:48%;width:22%;height:30%"></div><div class="mblk" style="left:32%;top:50%;width:28%;height:28%"></div><div class="myloc" style="position:absolute;left:48%;top:46%;transform:translate(-50%,-50%)"></div><div class="mpin" style="left:24%;top:36%" onclick="G('s3')"><div class="pbbl ok">5K · 68 chỗ</div></div><div class="mpin" style="left:52%;top:55%" onclick="G('s3')"><div class="pbbl">4K · 102 chỗ</div></div><div class="mpin" style="left:37%;top:63%" onclick="G('s3')"><div class="pbbl warn">3K · 4 chỗ</div></div><div class="mpin" style="left:76%;top:27%" onclick="G('s3')"><div class="pbbl ok">8K · 341 chỗ</div></div></div></div></div>
+  </div>
+  <div class="bn"><button class="bt on" onclick="G('s2')"><div class="bt-i">🗺</div><div class="bt-l">Tìm kiếm</div><div class="bt-d"></div></button><button class="bt" onclick="G('shist')"><div class="bt-i">📋</div><div class="bt-l">Lịch sử</div><div class="bt-d"></div></button><button class="bt" onclick="G('spku')"><div class="bt-i">⭐</div><div class="bt-l">Gói dịch vụ</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacc')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ DETAIL ══ -->
+<div class="screen" id="s3">
+  <div class="sb"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="tb"><div class="tb-r"><button class="bk" onclick="G('s2')">←</button><div><div class="tb-t">Chi tiết bãi xe</div></div><button class="ib">♥</button></div></div>
+  <div class="sc">
+    <div class="gall">🏢<div class="gov"></div><div class="gcnt">1 / 5 ảnh</div><div class="gdots"><div class="gd on"></div><div class="gd"></div><div class="gd"></div><div class="gd"></div><div class="gd"></div></div></div>
+    <div class="dbody"><div class="dname">Bãi xe Vincom Đồng Khởi</div><div class="daddr">📍 Tầng B1, 70 Lê Thánh Tôn, Quận 1</div><div class="dpills"><div class="pill gn"><span>●</span> 68 chỗ trống</div><div class="pill"><span>⭐</span> 4.8 (312)</div><div class="pill"><span>🕐</span> 24/7</div><div class="pill ac"><span>💰</span> 5.000₫/giờ</div></div></div>
+    <div style="padding:0 20px 0"><div class="sl">Tiện ích</div><div class="amen-row"><div class="amen"><div class="ai">🏠</div><div class="al">Mái che</div></div><div class="amen"><div class="ai">📷</div><div class="al">Camera 24/7</div></div><div class="amen"><div class="ai">💂</div><div class="al">Bảo vệ</div></div><div class="amen"><div class="ai">⚡</div><div class="al">Sạc EV</div></div><div class="amen"><div class="ai">♿</div><div class="al">Khuyết tật</div></div></div></div>
+    <div style="height:8px;background:var(--g1);margin:20px 0"></div>
+    <div class="secb">
+      <div class="zi"><div class="zb res">🔵 Khu đặt trước</div><div class="zb opn">⬜ Khu vãng lai</div></div>
+      <div class="sleg"><div class="le"><div class="ld" style="background:var(--gl);border:1.5px solid #A7F3D0"></div>Trống</div><div class="le"><div class="ld" style="background:var(--g1)"></div>Có xe</div><div class="le"><div class="ld" style="background:var(--blue)"></div>Chọn</div><div class="le"><div class="ld" style="background:var(--aml);border:1px solid var(--amber)"></div>Vãng lai</div></div>
+      <div class="sfll">Hàng A – Khu đặt trước</div>
+      <div class="sgrid"><div class="slot taken">A1</div><div class="slot taken">A2</div><div class="slot free" onclick="PS(this)">A3</div><div class="slot free" onclick="PS(this)">A4</div><div class="slot taken">A5</div><div class="slot free" onclick="PS(this)">A6</div></div>
+      <div class="sfll">Hàng B – Khu đặt trước</div>
+      <div class="sgrid"><div class="slot free" onclick="PS(this)">B1</div><div class="slot taken">B2</div><div class="slot taken">B3</div><div class="slot free" onclick="PS(this)">B4</div><div class="slot free" onclick="PS(this)">B5</div><div class="slot taken">B6</div></div>
+      <div class="sfll">Hàng C – Khu vãng lai</div>
+      <div class="sgrid"><div class="slot opz">C1</div><div class="slot opz">C2</div><div class="slot opz">C3</div><div class="slot opz">C4</div><div class="slot opz">C5</div><div class="slot opz">C6</div></div>
+    </div>
+    <div style="height:8px;background:var(--g1);margin:20px 0"></div>
+    <div class="secb">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div class="sl" style="margin:0">Đánh giá cộng đồng</div><span style="font-size:13px;font-weight:600;color:var(--blue)">Xem tất cả →</span></div>
+      <div class="ravg"><div style="text-align:center"><div class="rbig">4.8</div><div class="rss">★★★★★</div><div class="rct">312 đánh giá</div></div><div class="rbars"><div class="rrow"><span class="rs">5</span><div class="rbg"><div class="rf" style="width:78%"></div></div><span class="rp">78%</span></div><div class="rrow"><span class="rs">4</span><div class="rbg"><div class="rf" style="width:14%"></div></div><span class="rp">14%</span></div><div class="rrow"><span class="rs">3</span><div class="rbg"><div class="rf" style="width:5%"></div></div><span class="rp">5%</span></div><div class="rrow"><span class="rs">2</span><div class="rbg"><div class="rf" style="width:2%"></div></div><span class="rp">2%</span></div><div class="rrow"><span class="rs">1</span><div class="rbg"><div class="rf" style="width:1%"></div></div><span class="rp">1%</span></div></div></div>
+      <div class="rcard"><div class="rhead"><div class="rav">T</div><div><div class="rnm">Trần Thị Hoa</div><div class="rdt">2 ngày trước</div></div><div class="rst">★★★★★</div></div><div class="rtxt">Bãi sạch sẽ, quét QR vào thẳng không xếp hàng.</div></div>
+      <div class="rcard"><div class="rhead"><div class="rav" style="background:var(--gl);color:var(--gd)">N</div><div><div class="rnm">Nguyễn Minh Tuấn</div><div class="rdt">5 ngày trước</div></div><div class="rst">★★★★☆</div></div><div class="rtxt">Đặt hộ cho vợ rất tiện – nhập biển số vợ là xong. Camera LPR nhận diện tự động.</div></div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+  <div class="cw"><button class="cta" id="dCta" onclick="G('s4')">Đặt chỗ ngay – Chọn chỗ đỗ</button></div>
+  <div class="bn"><button class="bt on" onclick="G('s2')"><div class="bt-i">🗺</div><div class="bt-l">Tìm kiếm</div><div class="bt-d"></div></button><button class="bt" onclick="G('shist')"><div class="bt-i">📋</div><div class="bt-l">Lịch sử</div><div class="bt-d"></div></button><button class="bt" onclick="G('spku')"><div class="bt-i">⭐</div><div class="bt-l">Gói dịch vụ</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacc')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ BOOKING ══ -->
+<div class="screen" id="s4">
+  <div class="sb"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="tb"><div class="tb-r"><button class="bk" onclick="G('s3')">←</button><div><div class="tb-t">Đặt chỗ</div><div class="tb-s">Khai báo xe &amp; chọn giờ</div></div><div style="width:40px"></div></div></div>
+  <div class="sc">
+    <div class="bsum"><div class="bico">🏢</div><div><div class="bnm2">Vincom Đồng Khởi</div><div class="bsub2">Tầng B1 · 5.000₫/giờ</div></div><div class="bbdg"><div class="bsl" id="bS">A3</div><div class="bsll">Chỗ chọn</div></div></div>
+    <div class="fsec" style="padding-top:4px">
+      <label class="fl">Biển số xe <span class="req">★ Bắt buộc</span></label>
+      <input type="text" class="inp pl" placeholder="VD: 51A-12345" maxlength="12" oninput="this.value=this.value.toUpperCase()">
+      <div style="font-size:11px;color:var(--g4);margin-top:6px">🔗 Biển số liên kết với mã QR xác thực tại cổng bãi</div>
+    </div>
+    <div class="dtog"><div class="drow"><div><div class="dlbl">👥 Đặt hộ người khác</div><div class="dsub">Khai báo biển số xe người được đặt</div></div><label class="tgl"><input type="checkbox" id="dTog" onchange="TD()"><span class="tsl"></span></label></div><div class="dext" id="dExt" style="display:none"><label class="fl" style="margin-bottom:8px">Biển số xe người được đặt <span class="req">★</span></label><input type="text" class="inp pl" placeholder="VD: 51B-67890" maxlength="12" oninput="this.value=this.value.toUpperCase()"><div style="font-size:11px;color:var(--blue2);margin-top:6px;background:var(--blue-lt);padding:8px 10px;border-radius:var(--r1)">ℹ️ Camera LPR nhận diện biển số tự động. Người đặt không cần có mặt.</div></div></div>
+    <div class="fsec"><label class="fl">Giờ vào</label><div class="tgrid"><div class="tbtn off">7:00</div><div class="tbtn off">8:00</div><div class="tbtn" onclick="PT(this)">9:00</div><div class="tbtn" onclick="PT(this)">10:00</div><div class="tbtn on" onclick="PT(this)">11:00</div><div class="tbtn" onclick="PT(this)">12:00</div><div class="tbtn" onclick="PT(this)">13:00</div><div class="tbtn" onclick="PT(this)">14:00</div><div class="tbtn" onclick="PT(this)">15:00</div><div class="tbtn" onclick="PT(this)">16:00</div><div class="tbtn off">17:00</div><div class="tbtn off">18:00</div></div></div>
+    <div class="fsec"><label class="fl">Thời lượng</label><div class="drow2"><div class="dbtn" onclick="PD(this,5000)">1 giờ</div><div class="dbtn on" onclick="PD(this,10000)">2 giờ</div><div class="dbtn" onclick="PD(this,15000)">3 giờ</div><div class="dbtn" onclick="PD(this,20000)">4h+</div></div></div>
+    <div class="fsec"><div class="pbox"><div class="prow"><span class="pl">Phí đỗ xe (2 giờ)</span><span class="pv" id="bP">10.000₫</span></div><div class="prow"><span class="pl">Phí dịch vụ</span><span class="pv">2.000₫</span></div><div class="prow"><span class="pl">Ưu đãi lần đầu</span><span class="pv" style="color:var(--green)">–2.000₫</span></div><div class="prow grand"><span class="pl">Tổng cộng</span><span class="pv" id="bT">10.000₫</span></div></div><div class="wnote">⚠️ Chỗ giữ tối đa <strong>30 phút</strong>. Quá thời gian tự động huỷ, không hoàn tiền.</div></div>
+  </div>
+  <div class="cw"><button class="cta" onclick="G('s5')">Tiếp tục thanh toán →</button></div>
+  <div class="bn"><button class="bt on" onclick="G('s2')"><div class="bt-i">🗺</div><div class="bt-l">Tìm kiếm</div><div class="bt-d"></div></button><button class="bt" onclick="G('shist')"><div class="bt-i">📋</div><div class="bt-l">Lịch sử</div><div class="bt-d"></div></button><button class="bt" onclick="G('spku')"><div class="bt-i">⭐</div><div class="bt-l">Gói dịch vụ</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacc')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ PAYMENT ══ -->
+<div class="screen" id="s5">
+  <div class="sb"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="tb"><div class="tb-r"><button class="bk" onclick="G('s4')">←</button><div><div class="tb-t">Thanh toán</div><div class="tb-s">Chọn phương thức</div></div><div style="width:40px"></div></div></div>
+  <div class="sc">
+    <div class="psum"><div class="ps-t">Tóm tắt đặt chỗ</div><div class="ps-r"><span class="pl">Bãi xe</span><span class="pv">Vincom Đồng Khởi</span></div><div class="ps-r"><span class="pl">Chỗ đỗ</span><span class="pv">A3 – Tầng B1</span></div><div class="ps-r"><span class="pl">Biển số</span><span class="pv" style="color:var(--blue)">51A-12345</span></div><div class="ps-r"><span class="pl">Thời gian</span><span class="pv">11:00 – 13:00</span></div><div class="ps-r grand"><span class="pl">Tổng thanh toán</span><span class="pv">10.000₫</span></div></div>
+    <span class="pm-lbl">Phương thức thanh toán</span>
+    <div class="pms"><div class="pm on" onclick="PP(this)"><div class="pmlog mm">MM</div><div class="pminf"><div class="pmnm">Ví MoMo</div><div class="pmsb">Số dư: <span class="pmbal">125.000₫</span></div></div><div class="rring on"><div class="rdot"></div></div></div><div class="pm" onclick="PP(this)"><div class="pmlog zl">ZL</div><div class="pminf"><div class="pmnm">ZaloPay</div><div class="pmsb">Số dư: <span class="pmbal">85.000₫</span></div></div><div class="rring"></div></div><div class="pm" onclick="PP(this)"><div class="pmlog vn">VN</div><div class="pminf"><div class="pmnm">VNPay</div><div class="pmsb">QR ngân hàng</div></div><div class="rring"></div></div><div class="pm" onclick="PP(this)"><div class="pmlog cd">💳</div><div class="pminf"><div class="pmnm">Thẻ ngân hàng</div><div class="pmsb">Visa / Mastercard / ATM</div></div><div class="rring"></div></div><div class="pm" onclick="PP(this)"><div class="pmlog ca">💵</div><div class="pminf"><div class="pmnm">Tiền mặt tại quầy</div><div class="pmsb">Thanh toán khi đến bãi</div></div><div class="rring"></div></div></div>
+    <div class="snote">🔒 Giao dịch mã hoá SSL 256-bit · Thông tin thẻ không lưu trên server</div>
+    <div style="height:16px"></div>
+  </div>
+  <div class="cw"><button class="cta gr" onclick="G('s6')">Xác nhận &amp; Thanh toán 10.000₫</button></div>
+  <div class="bn"><button class="bt on" onclick="G('s2')"><div class="bt-i">🗺</div><div class="bt-l">Tìm kiếm</div><div class="bt-d"></div></button><button class="bt" onclick="G('shist')"><div class="bt-i">📋</div><div class="bt-l">Lịch sử</div><div class="bt-d"></div></button><button class="bt" onclick="G('spku')"><div class="bt-i">⭐</div><div class="bt-l">Gói dịch vụ</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacc')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ SUCCESS ══ -->
+<div class="screen" id="s6">
+  <div class="sb"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="tb" style="text-align:center"><div class="tb-r" style="justify-content:center"><div class="tb-t">Đặt chỗ thành công</div></div></div>
+  <div class="sc"><div class="succ"><div class="sring">✓</div><div class="stit">Thanh toán xong!</div><div class="ssub">Chỗ A3 được giữ đến 11:30.<br>Quét QR hoặc biển số khi vào bãi.</div><div class="qrc"><div class="qrcode"></div><div class="qrid">#PC-2025-8842</div><div class="qrl">Liên kết biển số: <strong style="color:var(--blue)">51A-12345</strong></div><div class="qroff">📡 Hoạt động offline – không cần mạng</div></div><div class="bkc"><div class="bcr"><span class="bl">Bãi xe</span><span class="bv">Vincom Đồng Khởi</span></div><div class="bcr"><span class="bl">Chỗ đỗ</span><span class="bv" style="color:var(--blue)">A3 – Tầng B1</span></div><div class="bcr"><span class="bl">Thời gian</span><span class="bv">11:00 – 13:00</span></div><div class="bcr"><span class="bl">Đã trả</span><span class="bv" style="color:var(--green)">10.000₫</span></div></div><div class="arow"><button class="ab p" onclick="T('🧭 Đang mở bản đồ...')">🧭 Chỉ đường</button><button class="ab g" onclick="G('shist')">📋 Lịch sử</button></div><button class="exb" onclick="G('s6e')">⏰ Gia hạn thêm giờ đỗ</button></div></div>
+  <div class="bn"><button class="bt" onclick="G('s2')"><div class="bt-i">🗺</div><div class="bt-l">Tìm kiếm</div><div class="bt-d"></div></button><button class="bt on" onclick="G('shist')"><div class="bt-i">📋</div><div class="bt-l">Lịch sử</div><div class="bt-d"></div></button><button class="bt" onclick="G('spku')"><div class="bt-i">⭐</div><div class="bt-l">Gói dịch vụ</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacc')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ EXTEND ══ -->
+<div class="screen" id="s6e">
+  <div class="sb"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="tb"><div class="tb-r"><button class="bk" onclick="G('s6')">←</button><div><div class="tb-t">Gia hạn đỗ xe</div><div class="tb-s">Chỗ A3 · Vincom Đồng Khởi</div></div><div style="width:40px"></div></div></div>
+  <div class="sc"><div style="margin:16px 20px;background:var(--blue-lt);border:1.5px solid var(--blue-b);border-radius:var(--r3);padding:14px"><div style="font-size:12px;color:var(--blue2);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Trạng thái</div><div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:22px;font-weight:800;color:var(--g9)">11:00 – 13:00</div><div style="font-size:12px;color:var(--g5)">Còn lại: 45 phút</div></div><div style="background:var(--gl);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--gd)">● Đang đỗ</div></div><div style="background:var(--blue-ln);border-radius:var(--r1);height:6px;margin-top:12px;overflow:hidden"><div style="background:var(--blue);height:100%;border-radius:var(--r1);width:38%"></div></div></div><div class="fsec"><label class="fl">Gia hạn thêm</label><div class="eopts"><div class="eopt on" onclick="PE(this,2500)">+30 phút</div><div class="eopt" onclick="PE(this,5000)">+1 giờ</div><div class="eopt" onclick="PE(this,10000)">+2 giờ</div><div class="eopt" onclick="PE(this,15000)">+3 giờ</div></div></div><div class="fsec"><div class="pbox"><div class="prow"><span class="pl">Phí gia hạn</span><span class="pv" id="eP">2.500₫</span></div><div class="prow grand"><span class="pl">Tổng thanh toán</span><span class="pv" id="eT">2.500₫</span></div></div><div style="background:var(--gl);border-radius:var(--r2);padding:10px 14px;font-size:12px;color:var(--gd);display:flex;gap:8px;margin-bottom:16px">✓ Chỗ A3 chưa có người đặt tiếp. Bạn có thể gia hạn ngay.</div></div></div>
+  <div class="cw"><button class="cta gr" onclick="T('✓ Gia hạn thành công! Hết hạn 13:30');G('s6')">Xác nhận gia hạn</button></div>
+</div>
+<!-- ══ HISTORY ══ -->
+<div class="screen" id="shist" style="position:relative">
+  <div class="sb"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="tb"><div class="tb-r"><div class="tb-t">Lịch sử đặt chỗ</div></div></div>
+  <div class="sc">
+    <div style="background:var(--amber);padding:12px 20px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="G('s6e')"><span style="font-size:18px">⏱</span><div><div style="font-size:13px;font-weight:700;color:#fff">Đang đỗ – Vincom Đồng Khởi</div><div style="font-size:12px;color:rgba(255,255,255,.85)">Chỗ A3 · 11:00–13:00 · Còn 45 phút</div></div><span style="margin-left:auto;font-size:14px;font-weight:700;color:#fff">Gia hạn →</span></div>
+    <div style="padding:12px 20px 6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4)">Chưa đánh giá</div>
+    <div class="hi-it"><div class="ht-row"><div class="hico">🏢</div><div class="hnm">Vincom Đồng Khởi</div><div class="hpr">10.000₫</div></div><div class="hsub">Hôm nay · 11:00–13:00 · Chỗ A3 · 51A-12345</div><div class="hsr"><div class="stars" id="st0"><span class="star" onclick="RS(0,1)">★</span><span class="star" onclick="RS(0,2)">★</span><span class="star" onclick="RS(0,3)">★</span><span class="star" onclick="RS(0,4)">★</span><span class="star" onclick="RS(0,5)">★</span></div><button class="wrev" onclick="OS()">Viết đánh giá</button></div></div>
+    <div style="padding:12px 20px 6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4)">Đã đánh giá</div>
+    <div class="hi-it"><div class="ht-row"><div class="hico">🌿</div><div class="hnm">Green Park – Landmark 81</div><div class="hpr">24.000₫</div></div><div class="hsub">Hôm qua · 14:00–17:00 · Đặt hộ: 51B-99001</div><div class="hsr"><div class="stars"><span class="star on">★</span><span class="star on">★</span><span class="star on">★</span><span class="star on">★</span><span class="star on">★</span></div><span style="font-size:12px;color:var(--g4);margin-left:auto">Đã đánh giá</span></div></div>
+    <div class="hi-it"><div class="ht-row"><div class="hico">🏬</div><div class="hnm">Parkson Hùng Vương</div><div class="hpr">8.000₫</div></div><div class="hsub">02/05 · 09:00–11:00 · Chỗ C5</div><div class="hsr"><div class="stars"><span class="star on">★</span><span class="star on">★</span><span class="star on">★</span><span class="star on">★</span><span class="star">★</span></div><span style="font-size:12px;color:var(--g4);margin-left:auto">Đã đánh giá</span></div></div>
+  </div>
+  <div class="sov" id="sOv" onclick="CS(event)"><div class="rsh"><div class="shdl"></div><div class="shtit">Đánh giá bãi xe</div><div class="shsub">Vincom Đồng Khởi · Chỗ A3</div><div class="bstars" id="bStars"><span class="bstar" onclick="RB(1)">★</span><span class="bstar" onclick="RB(2)">★</span><span class="bstar" onclick="RB(3)">★</span><span class="bstar" onclick="RB(4)">★</span><span class="bstar" onclick="RB(5)">★</span></div><div class="rtags"><div class="rtag" onclick="this.classList.toggle('sel')">Sạch sẽ</div><div class="rtag" onclick="this.classList.toggle('sel')">An toàn</div><div class="rtag" onclick="this.classList.toggle('sel')">Nhanh chóng</div><div class="rtag" onclick="this.classList.toggle('sel')">Nhân viên tốt</div><div class="rtag" onclick="this.classList.toggle('sel')">Giá hợp lý</div><div class="rtag" onclick="this.classList.toggle('sel')">QR mượt</div></div><textarea class="rta" placeholder="Chia sẻ trải nghiệm (tuỳ chọn)..."></textarea><button class="rsub" onclick="SR()">Gửi đánh giá</button><button class="rskp" onclick="CS()">Bỏ qua</button></div></div>
+  <div class="bn"><button class="bt" onclick="G('s2')"><div class="bt-i">🗺</div><div class="bt-l">Tìm kiếm</div><div class="bt-d"></div></button><button class="bt on"><div class="bt-i">📋</div><div class="bt-l">Lịch sử</div><div class="bt-d"></div></button><button class="bt" onclick="G('spku')"><div class="bt-i">⭐</div><div class="bt-l">Gói dịch vụ</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacc')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ PACKAGES USER ══ -->
+<div class="screen" id="spku">
+  <div class="sb tr" style="position:absolute"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="sc" style="padding-bottom:20px">
+    <div style="background:linear-gradient(135deg,var(--pud),var(--pu),var(--blue));padding:44px 20px 28px;text-align:center"><div style="margin-top:8px;font-size:32px;margin-bottom:12px">⭐</div><div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:8px">Gói dịch vụ người dùng</div><div style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.5;margin-bottom:16px">Tiết kiệm thêm mỗi lượt đỗ xe với gói đăng ký</div><div class="pkg-tog"><button class="ptab on" id="ptM" onclick="PKT('month')">Hàng tháng</button><button class="ptab" id="ptQ" onclick="PKT('quarter')">Hàng quý <span style="font-size:10px;background:rgba(255,255,255,.25);padding:2px 6px;border-radius:100px;margin-left:3px">–8%</span></button></div></div>
+    <div class="pkgs">
+      <div class="pkg-card"><div class="pkg-ico">🆓</div><div class="pkg-nm">Free</div><div class="pkg-dc">Đầy đủ tính năng cơ bản – tìm, đặt chỗ, QR, lịch sử không giới hạn</div><div class="pkg-pr fr">Miễn phí <span>/ mãi mãi</span></div><ul class="pkg-ft"><li>Tìm kiếm bãi xe real-time</li><li>Đặt chỗ trước, sơ đồ ô đỗ</li><li>QR vào bãi, gia hạn giờ</li><li>Thanh toán MoMo, ZaloPay, VNPay...</li><li class="no">Giảm giá mỗi lượt đỗ</li><li class="no">Ưu tiên giờ cao điểm</li></ul><button class="pkg-btn pgh">Đang dùng</button></div>
+      <div class="pkg-card feat"><div class="pkg-best pu">⭐ Phổ biến nhất</div><div class="pkg-ico">💎</div><div class="pkg-nm">Premium</div><div class="pkg-dc">Giảm 2% mỗi lượt đỗ xe – hoàn tiền ngay sau giao dịch thành công</div><div class="pkg-pr pu2" id="pp-price">882.000₫ <span>/ tháng</span></div><div class="pkg-sv" id="pp-saving">≈ 29.400₫/ngày · Hoàn vốn từ ~100 lượt/tháng</div><ul class="pkg-ft"><li><strong>Giảm 2%</strong> mỗi lượt đỗ xe thành công</li><li>Tất cả tính năng Free</li><li>Ưu tiên tìm chỗ giờ cao điểm</li><li>Hỗ trợ ưu tiên qua chat</li><li>Lịch sử không giới hạn</li><li class="no">Nhiều biển số, không quảng cáo</li></ul><button class="pkg-btn ppu" onclick="T('💜 Chuyển đến thanh toán Premium...')">Đăng ký Premium</button></div>
+      <div class="pkg-card gld-c"><div class="pkg-best gd">⚡ Tiết kiệm nhất</div><div class="pkg-ico">🚀</div><div class="pkg-nm">Ultra</div><div class="pkg-dc">Giảm 5% mỗi lượt đỗ – gói theo xe, dùng cho toàn bộ gia đình</div><div class="pkg-pr gd2" id="pu-price">2.565.000₫ <span>/ quý</span></div><div class="pkg-sv" id="pu-saving">= 855.000₫/tháng · Tiết kiệm hơn Premium</div><ul class="pkg-ft"><li><strong>Giảm 5%</strong> mỗi lượt đỗ xe thành công</li><li>Gắn <strong>nhiều biển số</strong> (cả gia đình)</li><li>Tất cả tính năng Premium</li><li>Không hiển thị quảng cáo</li><li>Hỗ trợ 24/7 qua hotline riêng</li><li>Gia hạn tự động, không gián đoạn</li></ul><button class="pkg-btn pgd" onclick="T('⚡ Chuyển đến thanh toán Ultra...')">Đăng ký Ultra</button></div>
+    </div>
+    <div style="padding:4px 16px 8px"><div class="sl">So sánh chi tiết</div></div>
+    <div class="pcmp"><div class="pcr phdr"><div class="pcc" style="text-align:left">Tính năng</div><div class="pcc">Free</div><div class="pcc hl">Premium</div><div class="pcc hl2">Ultra</div></div><div class="pcr"><div class="pcc" style="text-align:left">Giảm giá / lượt</div><div class="pcc"><span class="pccx">✗</span></div><div class="pcc"><span class="pcct">2%</span></div><div class="pcc"><span class="pcct" style="color:var(--gold)">5%</span></div></div><div class="pcr"><div class="pcc" style="text-align:left">Đặt chỗ trước</div><div class="pcc"><span class="pcck">✓</span></div><div class="pcc"><span class="pcck">✓</span></div><div class="pcc"><span class="pcck">✓</span></div></div><div class="pcr"><div class="pcc" style="text-align:left">Nhiều biển số</div><div class="pcc"><span class="pccx">✗</span></div><div class="pcc"><span class="pccx">✗</span></div><div class="pcc"><span class="pcck">✓</span></div></div><div class="pcr"><div class="pcc" style="text-align:left">Ưu tiên cao điểm</div><div class="pcc"><span class="pccx">✗</span></div><div class="pcc"><span class="pcck">✓</span></div><div class="pcc"><span class="pcck">✓</span></div></div><div class="pcr"><div class="pcc" style="text-align:left">Không quảng cáo</div><div class="pcc"><span class="pccx">✗</span></div><div class="pcc"><span class="pccx">✗</span></div><div class="pcc"><span class="pcck">✓</span></div></div><div class="pcr"><div class="pcc" style="text-align:left">Hỗ trợ</div><div class="pcc pcct" style="font-size:10px">Cộng đồng</div><div class="pcc pcct" style="font-size:10px">Chat ưu tiên</div><div class="pcc pcct" style="font-size:10px;color:var(--gold)">Hotline 24/7</div></div></div>
+    <div style="margin:0 16px 20px;background:var(--blue-lt);border:1.5px solid var(--blue-b);border-radius:var(--r3);padding:14px;display:flex;gap:10px"><span style="font-size:18px">💡</span><div style="font-size:12px;color:var(--blue3);line-height:1.6">Nếu bạn chi <strong>500K/tháng</strong> đỗ xe: Premium hoàn <strong>10K/tháng</strong>, Ultra hoàn <strong>25K/tháng</strong>. Đặc biệt tiết kiệm khi cả gia đình dùng chung.</div></div>
+  </div>
+  <div class="bn"><button class="bt" onclick="G('s2')"><div class="bt-i">🗺</div><div class="bt-l">Tìm kiếm</div><div class="bt-d"></div></button><button class="bt" onclick="G('shist')"><div class="bt-i">📋</div><div class="bt-l">Lịch sử</div><div class="bt-d"></div></button><button class="bt on"><div class="bt-i">⭐</div><div class="bt-l">Gói dịch vụ</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacc')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ ACCOUNT USER ══ -->
+<div class="screen" id="sacc">
+  <div class="sb dk"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="sc">
+    <div class="acc-hero"><div class="acc-av">🧑‍💼</div><div class="acc-nm">Nguyễn Minh Anh</div><div class="acc-ph">📱 0912 *** 345 · Đã xác minh ✓</div><div class="acc-plan">🆓 Gói Free · <span style="color:rgba(255,255,255,.8);font-weight:400;margin-left:2px">Nâng cấp để tiết kiệm</span></div></div>
+    <div class="up-ban" style="background:linear-gradient(135deg,var(--pud),var(--pu),var(--blue))" onclick="G('spku')"><span style="font-size:28px">⭐</span><div style="flex:1"><div style="font-size:14px;font-weight:800;color:#fff">Nâng cấp Premium</div><div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:2px">Giảm 2% mỗi lượt đỗ xe · 882K/tháng</div></div><div style="color:rgba(255,255,255,.8);font-size:18px">→</div></div>
+    <div class="acc-sec">Tài khoản</div>
+    <div class="acc-menu">
+      <div class="acc-item" onclick="T('👤 Chỉnh sửa hồ sơ')"><div class="acc-ico" style="background:var(--blue-lt)">👤</div><div><div class="acc-lbl">Thông tin cá nhân</div><div class="acc-sub">Tên, số điện thoại, email</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="T('🚗 Quản lý phương tiện')"><div class="acc-ico" style="background:var(--gl)">🚗</div><div><div class="acc-lbl">Phương tiện của tôi</div><div class="acc-sub">51A-12345 · 1 xe đã đăng ký</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="T('💳 Quản lý thanh toán')"><div class="acc-ico" style="background:var(--aml)">💳</div><div><div class="acc-lbl">Phương thức thanh toán</div><div class="acc-sub">MoMo · ZaloPay đã kết nối</div></div><div class="acc-arr">›</div></div>
+    </div>
+    <div class="acc-sec">Hoạt động</div>
+    <div class="acc-menu">
+      <div class="acc-item" onclick="G('shist')"><div class="acc-ico" style="background:var(--g1)">📋</div><div><div class="acc-lbl">Lịch sử đặt chỗ</div><div class="acc-sub">3 lượt đặt gần đây</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="G('spku')"><div class="acc-ico" style="background:var(--pul)">⭐</div><div><div class="acc-lbl">Gói dịch vụ của tôi</div><div class="acc-sub">Đang dùng: Free · Nâng cấp ngay</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="T('🎁 Mã giới thiệu: PC-ANH99 · Nhận 20K/lượt')"><div class="acc-ico" style="background:var(--rl)">🎁</div><div><div class="acc-lbl">Giới thiệu bạn bè</div><div class="acc-sub">Nhận 20.000₫ mỗi lần thành công</div></div><div class="acc-arr">›</div></div>
+    </div>
+    <div class="acc-sec">Khác</div>
+    <div class="acc-menu">
+      <div class="acc-item" onclick="T('⚙ Cài đặt')"><div class="acc-ico" style="background:var(--g1)">⚙️</div><div><div class="acc-lbl">Cài đặt</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="T('❓ Hỗ trợ')"><div class="acc-ico" style="background:var(--g1)">❓</div><div><div class="acc-lbl">Hỗ trợ &amp; FAQ</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="G('s0')"><div class="acc-ico" style="background:var(--rl)">🚪</div><div><div class="acc-lbl" style="color:var(--red)">Đăng xuất</div></div><div class="acc-arr">›</div></div>
+    </div>
+    <div style="height:24px"></div>
+  </div>
+  <div class="bn"><button class="bt" onclick="G('s2')"><div class="bt-i">🗺</div><div class="bt-l">Tìm kiếm</div><div class="bt-d"></div></button><button class="bt" onclick="G('shist')"><div class="bt-i">📋</div><div class="bt-l">Lịch sử</div><div class="bt-d"></div></button><button class="bt" onclick="G('spku')"><div class="bt-i">⭐</div><div class="bt-l">Gói dịch vụ</div><div class="bt-d"></div></button><button class="bt on"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ OPERATOR DASHBOARD ══ -->
+<div class="screen" id="sop">
+  <div class="sb"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="tb"><div class="tb-r"><div><div class="tb-t">Operator <span style="color:var(--blue)">Dashboard</span></div><div class="tb-s">Vincom Đồng Khởi</div></div><div style="display:flex;gap:6px"><div style="display:flex;align-items:center;gap:5px;background:var(--gl);border-radius:100px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--gd)"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;display:block"></span>Live</div><button class="ib" onclick="T('📊 Xuất báo cáo...')">⬇</button></div></div></div>
+  <div class="sc">
+    <div class="kgrid"><div class="kc"><div class="kl">Lấp đầy</div><div class="kv" style="color:var(--amber)" id="kO">70%</div><div class="kch kup">↑ +5.2% hôm qua</div></div><div class="kc"><div class="kl">Doanh thu</div><div class="kv" style="color:var(--green)" id="kR">2.4M₫</div><div class="kch kup">↑ +12% TB tuần</div></div><div class="kc"><div class="kl">Lượt vào ra</div><div class="kv" style="color:var(--blue)" id="kT">842</div><div class="kch kdn">↓ -3% hôm qua</div></div><div class="kc"><div class="kl">Chỗ trống</div><div class="kv" style="color:var(--green)" id="kS">66</div><div class="kch" style="color:var(--g4)">/ 220 tổng</div></div></div>
+    <div style="padding:0 20px 6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4)">Điều chỉnh khu vực</div>
+    <div class="zctrl"><div class="zct">Phân bổ Reserved / Open Zone</div><div class="zcs">Tự điều chỉnh theo khung giờ – chủ bãi quyết định</div><div class="zdisp"><div class="zres" id="zR" style="width:65%">65% Đặt trước</div><div class="zopn" id="zO" style="width:35%">35% Vãng lai</div></div><input type="range" class="zsli" id="zSli" min="30" max="90" value="65" oninput="UZ(this.value)"><div class="zlbl"><span>30%</span><span>Khu đặt trước</span><span>90%</span></div><div class="ztcs"><div class="ztc on" onclick="ZP(this,65)">Hiện tại 65%</div><div class="ztc" onclick="ZP(this,80)">Cao điểm 80%</div><div class="ztc" onclick="ZP(this,50)">Thấp điểm 50%</div></div></div>
+    <div style="padding:0 20px 6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g4);display:flex;justify-content:space-between"><span>Quản lý chỗ đỗ</span><span style="font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--g4)">Chạm +/−</span></div>
+    <div class="scs"><div class="scrd"><div class="styr"><span class="sdot" style="background:var(--amber)"></span><span class="stnm">Xe máy</span></div><div class="scnt"><button class="cb cm" onclick="AS('motor',-1)">−</button><span class="cn" id="mS">44</span><button class="cb cp" onclick="AS('motor',1)">+</button></div><div class="sc-cap">Tổng: 120 · Dùng: <strong id="mU">76</strong></div><div class="otr"><div class="otf" id="mB" style="width:63%;background:var(--amber)"></div></div></div><div class="scrd"><div class="styr"><span class="sdot" style="background:var(--blue)"></span><span class="stnm">Ô tô</span></div><div class="scnt"><button class="cb cm" onclick="AS('car',-1)">−</button><span class="cn" id="cS">18</span><button class="cb cp" onclick="AS('car',1)">+</button></div><div class="sc-cap">Tổng: 80 · Dùng: <strong id="cU">62</strong></div><div class="otr"><div class="otf" id="cB" style="width:78%;background:var(--blue)"></div></div></div><div class="scrd"><div class="styr"><span class="sdot" style="background:var(--green)"></span><span class="stnm">VIP / SUV</span></div><div class="scnt"><button class="cb cm" onclick="AS('vip',-1)">−</button><span class="cn" id="vS">4</span><button class="cb cp" onclick="AS('vip',1)">+</button></div><div class="sc-cap">Tổng: 20 · Dùng: <strong id="vU">16</strong></div><div class="otr"><div class="otf" id="vB" style="width:80%;background:var(--green)"></div></div></div></div>
+    <div class="cpanel" style="margin-top:14px"><div class="clbl">Doanh thu theo giờ (K₫)</div><div class="bchart" id="bChart"></div></div>
+    <div class="cpanel" style="margin-top:10px"><div class="clbl">Phân bổ loại xe</div><div class="drow3"><svg width="88" height="88" viewBox="0 0 36 36"><circle cx="18" cy="18" r="13" fill="none" stroke="var(--g1)" stroke-width="5"/><circle cx="18" cy="18" r="13" fill="none" stroke="var(--amber)" stroke-width="5" stroke-dasharray="55 100" stroke-dashoffset="-25" transform="rotate(-90 18 18)"/><circle cx="18" cy="18" r="13" fill="none" stroke="#4D82FF" stroke-width="5" stroke-dasharray="28 100" stroke-dashoffset="-80" transform="rotate(-90 18 18)"/><circle cx="18" cy="18" r="13" fill="none" stroke="var(--green)" stroke-width="5" stroke-dasharray="10 100" stroke-dashoffset="-108" transform="rotate(-90 18 18)"/><text x="18" y="19" text-anchor="middle" dominant-baseline="central" fill="var(--g8)" font-size="5.5" font-weight="700" font-family="Plus Jakarta Sans,sans-serif">70%</text></svg><div class="dleg"><div class="dli"><span class="dd" style="background:var(--amber)"></span>Xe máy<span class="dv">55%</span></div><div class="dli"><span class="dd" style="background:#4D82FF"></span>Ô tô<span class="dv">28%</span></div><div class="dli"><span class="dd" style="background:var(--green)"></span>VIP<span class="dv">10%</span></div><div class="dli"><span class="dd" style="background:var(--g3)"></span>Khác<span class="dv">7%</span></div></div></div></div>
+    <div class="rpanel"><div class="rhd"><div class="rtl2">Giờ cao điểm</div><span style="font-size:12px;color:var(--blue);font-weight:600">Hôm nay</span></div><div class="pk-row"><span class="pkt">07:00–08:00</span><div class="pkb"><div class="pkf" style="width:75%;background:var(--amber)"></div></div><span class="pkp">75%</span></div><div class="pk-row"><span class="pkt">12:00–13:00</span><div class="pkb"><div class="pkf" style="width:92%;background:var(--red)"></div></div><span class="pkp">92%</span></div><div class="pk-row"><span class="pkt">17:00–19:00</span><div class="pkb"><div class="pkf" style="width:88%;background:var(--amber)"></div></div><span class="pkp">88%</span></div><div class="pk-row"><span class="pkt">21:00–22:00</span><div class="pkb"><div class="pkf" style="width:34%;background:var(--blue4)"></div></div><span class="pkp">34%</span></div></div>
+    <div class="rpanel" style="margin-top:10px"><div class="rhd"><div class="rtl2">Hiệu suất tài sản</div><span class="tag t-g">+15% target</span></div><div class="mrow"><span class="ml">Lượng khách TB/ngày</span><span class="mv" style="color:var(--blue)">712</span></div><div class="mrow"><span class="ml">Doanh thu TB/ngày</span><span class="mv" style="color:var(--green)">2.2M₫</span></div><div class="mrow"><span class="ml">Asset utilization</span><span class="mv" style="color:var(--amber)">68.4%</span></div><div class="mrow"><span class="ml">Tiềm năng tối ưu</span><span class="mv" style="color:var(--green)">+26%</span></div></div>
+    <div class="ins"><span style="font-size:20px;flex-shrink:0">📈</span><p><strong>Urban Mobility:</strong> Tối ưu occupancy tăng doanh thu <strong>15–30%</strong>. Hiện 68.4% — tiềm năng +26% nếu đạt 90%.</p></div>
+    <div style="height:24px"></div>
+  </div>
+  <div class="bn"><button class="bt on"><div class="bt-i">📊</div><div class="bt-l">Dashboard</div><div class="bt-d"></div></button><button class="bt" onclick="G('spko')"><div class="bt-i">📦</div><div class="bt-l">Gói bãi xe</div><div class="bt-d"></div></button><button class="bt" onclick="T('🏢 Hồ sơ bãi xe')"><div class="bt-i">🏢</div><div class="bt-l">Hồ sơ bãi</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacco')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ OPERATOR PACKAGES ══ -->
+<div class="screen" id="spko">
+  <div class="sb tr" style="position:absolute"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="sc" style="padding-bottom:20px">
+    <div style="background:linear-gradient(135deg,var(--blue3),#0D3460);padding:44px 20px 28px;text-align:center"><div style="margin-top:8px;font-size:32px;margin-bottom:12px">🏢</div><div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:8px">Gói dành cho Bãi xe</div><div style="font-size:14px;color:rgba(255,255,255,.8);line-height:1.5;margin-bottom:16px">Chọn gói phù hợp theo giai đoạn phát triển</div><div class="op-stages"><div class="sp on">Giai đoạn 1 ✓</div><div class="sp" onclick="T('GĐ2 sắp ra mắt')">Giai đoạn 2</div><div class="sp" onclick="T('GĐ3 sắp ra mắt')">Giai đoạn 3</div></div></div>
+    <div style="padding:16px 16px 8px"><div class="sl">Cơ cấu nguồn thu theo giai đoạn</div></div>
+    <div class="rtbl"><div class="rtr rhdr"><div class="rtc">Nguồn thu</div><div class="rtc">Mức giá</div><div class="rtc">Cơ chế</div><div class="rtc">GĐ</div></div><div class="rtr"><div class="rtc"><strong>Hoa hồng GD</strong></div><div class="rtc hl">21–23%</div><div class="rtc" style="font-size:11px">% giá trị giao dịch</div><div class="rtc gn">GĐ1 ✓</div></div><div class="rtr" style="background:var(--g0)"><div class="rtc"><strong>Phí sàn Basic</strong></div><div class="rtc am">850K₫/tháng</div><div class="rtc" style="font-size:11px">Phí tháng tham gia</div><div class="rtc" style="color:var(--blue);font-weight:600">GĐ2</div></div><div class="rtr"><div class="rtc"><strong>Phí sàn VIP</strong></div><div class="rtc hl">4.5M₫/tháng</div><div class="rtc" style="font-size:11px">Ưu tiên + phân tích</div><div class="rtc" style="color:var(--pud);font-weight:600">GĐ3</div></div><div class="rtr" style="background:var(--g0)"><div class="rtc"><strong>Quảng cáo</strong></div><div class="rtc am">CPC/CPM</div><div class="rtc" style="font-size:11px">Banner, sponsored</div><div class="rtc" style="color:var(--pud);font-weight:600">GĐ3</div></div></div>
+    <div style="padding:8px 16px 0"><div class="sl">Chi tiết từng gói</div></div>
+    <div style="padding:0 16px;margin-bottom:12px"><div class="op-pc ac"><div class="op-stg" style="background:var(--gl);color:var(--gd)">✓ Đang áp dụng</div><div class="op-ico">🤝</div><div class="op-nm">Hoa hồng giao dịch</div><div class="op-dc">Mô hình không rủi ro – chỉ trả phí khi có giao dịch thành công qua ParkConnect</div><div class="op-pr"><div class="mn" style="color:var(--green)">21 – 23% <span style="font-size:14px;font-weight:400;color:var(--g5)">/giao dịch</span></div><div class="sb3">Không phí cố định · Áp dụng ngay từ Giai đoạn 1</div></div><ul class="op-ft"><li>Hiển thị bãi xe trên ParkConnect</li><li>Nhận khách đặt chỗ trực tuyến 24/7</li><li>Dashboard vận hành cơ bản</li><li>Hỗ trợ onboarding &amp; cài đặt QR</li><li>Không mất phí cố định hàng tháng</li></ul><button class="op-btn og">Đang sử dụng</button></div></div>
+    <div style="padding:0 16px;margin-bottom:12px"><div class="op-pc vp"><div class="op-stg" style="background:var(--blue-lt);color:var(--blue2)">Giai đoạn 2</div><div class="op-ico">📈</div><div class="op-nm">Gói Basic</div><div class="op-dc">Chuyển sang phí cố định – phù hợp khi doanh thu từ nền tảng đã ổn định và tăng trưởng</div><div class="op-pr"><div class="mn" style="color:var(--blue)">850.000₫ <span style="font-size:14px;font-weight:400;color:var(--g5)">/bãi/tháng</span></div><div class="sb3">Thay thế hoa hồng · Tiết kiệm hơn khi doanh thu &gt;4M₫/tháng</div></div><ul class="op-ft"><li>Tất cả tính năng Giai đoạn 1</li><li>Không bị trích hoa hồng giao dịch</li><li>Phân tích doanh thu theo ngày/tuần/tháng</li><li>Quản lý tỷ lệ Reserved/Open linh hoạt</li><li>Tích hợp thanh toán không tiền mặt đầy đủ</li></ul><button class="op-btn on2" onclick="T('📧 Liên hệ sales để đăng ký gói Basic!')">Tìm hiểu thêm</button></div></div>
+    <div style="padding:0 16px;margin-bottom:12px"><div class="op-pc vvp"><div class="op-stg" style="background:var(--pul);color:var(--pud)">Giai đoạn 3</div><div class="op-ico">🌟</div><div class="op-nm">Gói VIP</div><div class="op-dc">Trở thành bãi xe nổi bật – ưu tiên hiển thị, quảng cáo, phân tích nâng cao</div><div class="op-pr"><div class="mn" style="color:var(--pud)">4.500.000₫ <span style="font-size:14px;font-weight:400;color:var(--g5)">/bãi/tháng</span></div><div class="sb3">Bao gồm Banner + Sponsored listing + Account Manager</div></div><ul class="op-ft"><li>Tất cả tính năng Gói Basic</li><li><strong>Ưu tiên top</strong> kết quả tìm kiếm</li><li>Banner &amp; Sponsored listing trong app</li><li>Phân tích hành vi khách, dự báo demand</li><li>Account Manager riêng + API tích hợp</li></ul><button class="op-btn" style="background:var(--pu);color:#fff" onclick="T('📞 Sales sẽ liên hệ trong 24h!')">Liên hệ tư vấn VIP</button></div></div>
+    <div style="margin:0 16px 20px;background:var(--gl);border:1.5px solid #A7F3D0;border-radius:var(--r3);padding:14px;display:flex;gap:10px"><span style="font-size:18px;flex-shrink:0">💡</span><div style="font-size:12px;color:var(--gd);line-height:1.6">Bãi xe đạt <strong>doanh thu từ nền tảng &gt;4M₫/tháng</strong> sẽ tiết kiệm hơn khi chuyển sang gói Basic. Sales team tư vấn thời điểm chuyển đổi tối ưu.</div></div>
+  </div>
+  <div class="bn"><button class="bt" onclick="G('sop')"><div class="bt-i">📊</div><div class="bt-l">Dashboard</div><div class="bt-d"></div></button><button class="bt on"><div class="bt-i">📦</div><div class="bt-l">Gói bãi xe</div><div class="bt-d"></div></button><button class="bt" onclick="T('🏢 Hồ sơ bãi xe')"><div class="bt-i">🏢</div><div class="bt-l">Hồ sơ bãi</div><div class="bt-d"></div></button><button class="bt" onclick="G('sacco')"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<!-- ══ OPERATOR ACCOUNT ══ -->
+<div class="screen" id="sacco">
+  <div class="sb dk"><span class="sb-t">9:41</span><span class="sb-i">📶 🔋</span></div>
+  <div class="sc">
+    <div class="op-ac-hero"><div class="op-ac-top"><div class="op-ac-av">🏢</div><div><div class="op-ac-nm">Nguyễn Văn Minh</div><div class="op-ac-bz">Bãi xe Vincom Đồng Khởi · Quận 1</div><div style="margin-top:6px"><span style="background:var(--gl);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--gd)">✓ Gói Hoa hồng – Giai đoạn 1</span></div></div></div><div class="op-stats"><div class="op-st"><div class="op-sn">220</div><div class="op-sl">Tổng chỗ</div></div><div class="op-st"><div class="op-sn">2.4M</div><div class="op-sl">DT/ngày</div></div><div class="op-st"><div class="op-sn">4.8★</div><div class="op-sl">Đánh giá</div></div></div></div>
+    <div class="up-ban" style="background:linear-gradient(135deg,var(--blue2),var(--blue))" onclick="G('spko')"><span style="font-size:28px">📦</span><div style="flex:1"><div style="font-size:14px;font-weight:800;color:#fff">Xem gói bãi xe</div><div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:2px">Nâng cấp Basic 850K/tháng khi DT &gt;4M₫</div></div><div style="color:rgba(255,255,255,.8);font-size:18px">→</div></div>
+    <div class="acc-sec">Quản lý bãi xe</div>
+    <div class="acc-menu">
+      <div class="acc-item" onclick="T('📸 Chỉnh sửa hồ sơ bãi xe')"><div class="acc-ico" style="background:var(--blue-lt)">🏢</div><div><div class="acc-lbl">Hồ sơ bãi xe</div><div class="acc-sub">Ảnh, mô tả, tiện ích</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="G('sop')"><div class="acc-ico" style="background:var(--gl)">📊</div><div><div class="acc-lbl">Dashboard vận hành</div><div class="acc-sub">Chỗ trống, doanh thu, lượt xe</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="T('💰 Tổng: 48.6M₫ tháng này')"><div class="acc-ico" style="background:var(--aml)">💰</div><div><div class="acc-lbl">Lịch sử doanh thu</div><div class="acc-sub">Tổng: 48.6M₫ tháng này</div></div><div class="acc-arr">›</div></div>
+    </div>
+    <div class="acc-sec">Gói &amp; Hợp đồng</div>
+    <div class="acc-menu">
+      <div class="acc-item" onclick="G('spko')"><div class="acc-ico" style="background:var(--pul)">📦</div><div><div class="acc-lbl">Gói dịch vụ bãi xe</div><div class="acc-sub">Đang dùng: Hoa hồng 21–23%</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="T('📄 Hợp đồng đối tác – hiệu lực đến 31/12/2025')"><div class="acc-ico" style="background:var(--g1)">📄</div><div><div class="acc-lbl">Hợp đồng đối tác</div><div class="acc-sub">Hiệu lực đến 31/12/2025</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="T('📞 Account Manager: 0901 *** 888')"><div class="acc-ico" style="background:var(--gl)">📞</div><div><div class="acc-lbl">Liên hệ hỗ trợ</div><div class="acc-sub">Account Manager: 0901 *** 888</div></div><div class="acc-arr">›</div></div>
+    </div>
+    <div class="acc-sec">Khác</div>
+    <div class="acc-menu">
+      <div class="acc-item" onclick="T('⚙ Cài đặt thông báo')"><div class="acc-ico" style="background:var(--g1)">⚙️</div><div><div class="acc-lbl">Cài đặt</div></div><div class="acc-arr">›</div></div>
+      <div class="acc-item" onclick="G('s0')"><div class="acc-ico" style="background:var(--rl)">🚪</div><div><div class="acc-lbl" style="color:var(--red)">Đăng xuất</div></div><div class="acc-arr">›</div></div>
+    </div>
+    <div style="height:24px"></div>
+  </div>
+  <div class="bn"><button class="bt" onclick="G('sop')"><div class="bt-i">📊</div><div class="bt-l">Dashboard</div><div class="bt-d"></div></button><button class="bt" onclick="G('spko')"><div class="bt-i">📦</div><div class="bt-l">Gói bãi xe</div><div class="bt-d"></div></button><button class="bt"><div class="bt-i">🏢</div><div class="bt-l">Hồ sơ bãi</div><div class="bt-d"></div></button><button class="bt on"><div class="bt-i">👤</div><div class="bt-l">Tài khoản</div><div class="bt-d"></div></button></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let cur='s0';
+function G(id){const p=document.getElementById(cur);if(p)p.classList.remove('on');cur=id;const nx=document.getElementById(id);if(nx){nx.classList.add('on');const s=nx.querySelector('.sc');if(s)s.scrollTop=0;}if(id==='sop')BC();}
+function setRole(r){G(r==='user'?'s1u':'s1o');}
+function PV(el,nm){document.querySelectorAll('.vi').forEach(i=>i.classList.remove('sel'));el.classList.add('sel');T('✓ Đã chọn: '+nm);}
+function TC(el){el.classList.toggle('sel');}
+function SLM(m){document.getElementById('lv').style.display=m==='list'?'flex':'none';document.getElementById('lv').style.flexDirection='column';document.getElementById('mv').style.display=m==='map'?'block':'none';document.getElementById('bL').classList.toggle('on',m==='list');document.getElementById('bM').classList.toggle('on',m==='map');}
+let selSlot='A3';
+function PS(el){document.querySelectorAll('.slot.sel').forEach(s=>{s.classList.remove('sel');s.classList.add('free');});el.classList.remove('free');el.classList.add('sel');selSlot=el.textContent;document.getElementById('dCta').textContent='Đặt chỗ ngay – Chỗ '+selSlot;document.getElementById('bS').textContent=selSlot;}
+function TD(){const on=document.getElementById('dTog').checked;document.getElementById('dExt').style.display=on?'block':'none';if(on)T('👥 Đặt hộ: nhập biển số xe người được đặt');}
+function PT(el){if(el.classList.contains('off'))return;document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function PD(el,p){document.querySelectorAll('.dbtn').forEach(b=>b.classList.remove('on'));el.classList.add('on');const v=p.toLocaleString('vi')+'₫';document.getElementById('bP').textContent=v;document.getElementById('bT').textContent=v;}
+function PE(el,p){document.querySelectorAll('.eopt').forEach(b=>b.classList.remove('on'));el.classList.add('on');const v=p.toLocaleString('vi')+'₫';document.getElementById('eP').textContent=v;document.getElementById('eT').textContent=v;}
+function PP(el){document.querySelectorAll('.pm').forEach(i=>{i.classList.remove('on');const r=i.querySelector('.rring');r.classList.remove('on');const d=r.querySelector('.rdot');if(d)d.remove();});el.classList.add('on');const r=el.querySelector('.rring');r.classList.add('on');const d=document.createElement('div');d.className='rdot';r.appendChild(d);}
+function PKT(t){document.getElementById('ptM').classList.toggle('on',t==='month');document.getElementById('ptQ').classList.toggle('on',t==='quarter');if(t==='quarter'){document.getElementById('pp-price').innerHTML='811.000₫ <span>/ tháng</span>';document.getElementById('pp-saving').textContent='Thanh toán 2.433.000₫/quý · Tiết kiệm 8%';document.getElementById('pu-price').innerHTML='2.565.000₫ <span>/ quý</span>';document.getElementById('pu-saving').textContent='= 855.000₫/tháng · Giảm 5% mỗi lượt đỗ';}else{document.getElementById('pp-price').innerHTML='882.000₫ <span>/ tháng</span>';document.getElementById('pp-saving').textContent='≈ 29.400₫/ngày · Hoàn vốn từ ~100 lượt/tháng';document.getElementById('pu-price').innerHTML='2.565.000₫ <span>/ quý</span>';document.getElementById('pu-saving').textContent='= 855.000₫/tháng · Tiết kiệm hơn Premium';}}
+const SD={motor:{free:44,total:120},car:{free:18,total:80},vip:{free:4,total:20}};
+function AS(t,d){const s=SD[t];s.free=Math.max(0,Math.min(s.total,s.free+d));const u=s.total-s.free,p=Math.round((u/s.total)*100);const ids={motor:['mS','mU','mB'],car:['cS','cU','cB'],vip:['vS','vU','vB']};document.getElementById(ids[t][0]).textContent=s.free;document.getElementById(ids[t][1]).textContent=u;document.getElementById(ids[t][2]).style.width=p+'%';const tf=SD.motor.free+SD.car.free+SD.vip.free;document.getElementById('kO').textContent=Math.round(((220-tf)/220)*100)+'%';document.getElementById('kS').textContent=tf;T(d>0?'✓ Thêm 1 chỗ trống':'✓ Ghi nhận 1 xe vào bãi');}
+const hrs=['6h','7h','8h','9h','10h','11h','12h','13h','14h','15h','16h','17h','18h','19h','20h'],rvs=[80,180,210,150,120,200,280,240,130,110,160,290,270,140,90];
+function BC(){const c=document.getElementById('bChart');if(!c||c.children.length)return;const mx=Math.max(...rvs);hrs.forEach((h,i)=>{const col=document.createElement('div');col.className='bcol';const b=document.createElement('div');b.className='bbar'+(rvs[i]>250?' pk':'');b.style.height=(rvs[i]/mx*100)+'%';b.onclick=()=>T(h+' → '+rvs[i]+'K₫');const l=document.createElement('div');l.className='blt';l.textContent=h;col.appendChild(b);col.appendChild(l);c.appendChild(col);});}
+function UZ(v){const o=100-v;document.getElementById('zR').style.width=v+'%';document.getElementById('zR').textContent=v+'% Đặt trước';document.getElementById('zO').style.width=o+'%';document.getElementById('zO').textContent=o+'% Vãng lai';}
+function ZP(el,v){document.querySelectorAll('.ztc').forEach(c=>c.classList.remove('on'));el.classList.add('on');document.getElementById('zSli').value=v;UZ(v);T('✓ Áp dụng: '+v+'% khu đặt trước');}
+function RS(i,v){document.querySelectorAll('#st'+i+' .star').forEach((s,j)=>s.classList.toggle('on',j<v));T('Đã chọn '+v+' sao ⭐');}
+function OS(){document.getElementById('sOv').classList.add('open');}
+function CS(e){if(!e||e.target===document.getElementById('sOv'))document.getElementById('sOv').classList.remove('open');}
+function RB(v){document.querySelectorAll('.bstar').forEach((s,i)=>s.classList.toggle('on',i<v));}
+function SR(){document.getElementById('sOv').classList.remove('open');document.querySelectorAll('#st0 .star').forEach(s=>s.classList.add('on'));const b=document.querySelector('.wrev');if(b){b.textContent='Đã đánh giá';b.style.color='var(--green)';}T('✓ Cảm ơn đánh giá của bạn!');}
+let tt;
+function T(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2500);}
+</script>
+</body>
+</html>
